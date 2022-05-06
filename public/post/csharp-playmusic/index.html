@@ -1,0 +1,319 @@
+<!doctype html><html lang=zh-cn dir=content/zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=content-security-policy content="upgrade-insecure-requests"><title>[C#] 音乐播放 3 种方式 Demo 与 MCI 音乐播放器封装类 - 诺尔的小窝</title><meta name=keywords content="史莱姆诺尔,萌诺尔,诺尔,博客,程序员,自学,编程,笔记,技术,分享,.NET,C#"><meta name=author content="史莱姆诺尔"><meta property="og:title" content="[C#] 音乐播放 3 种方式 Demo 与 MCI 音乐播放器封装类"><meta property="og:site_name" content="诺尔的小窝"><meta property="og:image" content="/img/author.jpg"><meta name=title content="[C#] 音乐播放 3 种方式 Demo 与 MCI 音乐播放器封装类 - 诺尔的小窝"><meta name=description content="为了更好的开源世界~"><link rel="shortcut icon" href=/img/favicon.ico><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=/img/apple-touch-icon.png><link href=//cdn.bootcdn.net/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css rel=stylesheet type=text/css><link href=//cdn.bootcdn.net/ajax/libs/imageviewer/0.1.0/viewer.min.css rel=stylesheet><link href=/css/main.css rel=stylesheet type=text/css><link href=/css/syntax.css rel=stylesheet type=text/css></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle role=button style=opacity:1;top:0><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><div class=multi-lang-switch><i class="fa fa-fw fa-language" style=margin-right:5px></i>
+<a class=lang-link id=zh-cn href=#>中文</a></div><div class=custom-logo-site-title><a href=/ class=brand rel=start><span class=logo-line-before><i></i></span>
+<span class=site-title>诺尔的小窝</span>
+<span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>前进! 前进! 不择手段的前进!</p></div><div class=site-nav-right><div class="toggle popup-trigger" style=opacity:1;top:0><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=/post rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=/about.html rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于我</a></li><li class=menu-item><a href=/404.html rel=section><i class="menu-item-icon fa fa-fw fa-heartbeat"></i><br>公益404</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class=site-search><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class=search-icon><i class="fa fa-search"></i></span>
+<span class=popup-btn-close><i class="fa fa-times-circle"></i></span><div class=local-search-input-wrapper><input autocomplete=off placeholder=搜索关键字... spellcheck=false type=text id=local-search-input autocapitalize=none autocorrect=off></div></div><div id=local-search-result></div></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://slimenull.top/post/csharp-playmusic/ itemprop=url>[C#] 音乐播放 3 种方式 Demo 与 MCI 音乐播放器封装类</a></h1><div class=post-meta><span class=post-time><i class="fa fa-calendar-o fa-fw"></i>
+<span class=post-meta-item-text>时间：</span>
+<time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2021-02-11">2021-02-11</time></span>
+<span>|
+<i class="fa fa-file-word-o fa-fw"></i>
+<span class=post-meta-item-text>字数：</span>
+<span class=leancloud-world-count>1298 字</span></span>
+<span>|
+<i class="fa fa-eye fa-fw"></i>
+<span class=post-meta-item-text>阅读：</span>
+<span class=leancloud-view-count>3分钟</span></span>
+<span id=/post/csharp-playmusic/ class=leancloud_visitors data-flag-title="[C#] 音乐播放 3 种方式 Demo 与 MCI 音乐播放器封装类">|
+<i class="fa fa-binoculars fa-fw"></i>
+<span class=post-meta-item-text>阅读次数：</span>
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>SoundPlayer, MciCommandString, NAudio 三种方式播放音频示例</p><h2 id=淦>淦!</h2><p>首先代码是不完整的, 我还是没能成功设置音量, 除此之外, 别的倒是挺顺利的, 当前实现的功能如下:</p><blockquote><p>播放 暂停 还原 停止 获取进度 获取长度 设置进度 获取播放状态</p></blockquote><h2 id=内容>内容:</h2><ul><li>本项目的仓库在: <a id=download_link href=https://github.com/SlimeNull/AudioTest>SlimeNull/AudioTest</a>, 在这里下载哦.</li></ul><h4 id=-音乐播放-demo>> 音乐播放 Demo:</h4><ul><li><p>先放图吧:
+<img src=https://img-blog.csdnimg.cn/20210211102257257.png alt></p><blockquote><p>首先左上角是打开文件的, 然后 PlayType 是播放方式, 我现在让它支持 3 种, 一种是SoundPlayer, 然后是 MCI, 然后是 NAudio 库.
+ 
+实现了播放, 暂停, 停止, 移除, 进度调整到开头, 进度调整(就那个track bar), 同步播放(如果点了这个, UI线程会阻塞的哦), 获取音乐长度, 获取播放状态, 获取播放位置, 重复播放.
+ 
+不同的功能对不同的播放种类支持性不同, 所以, 如果你按下了按钮, 没反应, 也没报错, 那就是它不支持这个功能(也就是代码里没有写)'</p></blockquote><p>下载代码, 请看前面的链接.<a href=#download_link>↑跳转↑</a></p></li></ul><h4 id=-mci-播放器封装>> MCI 播放器封装:</h4><ul><li>上边的窗体程序就体现了封装类所实现的所有功能喔, 所以试试吧, 你也可以直接粘贴下面的代码, 但是cs文件的名称, 如果可以的话, 我希望你命名为 &ldquo;Null.MciPlayer&rdquo; <sub>(没错就是我的名字</sub><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System</span>;
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System.IO</span>;
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System.Runtime.InteropServices</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>namespace</span> <span style=color:#00f;font-weight:700>Null.MciPlayer</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>class</span> <span style=color:#00f>MciPlayer</span> : IDisposable
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span><span style=color:#b44>        [DllImport(&#34;kernel32.dll&#34;, EntryPoint = &#34;GetShortPathNameW&#34;, CharSet = CharSet.Unicode)]</span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>extern</span> <span style=color:#a2f;font-weight:700>static</span> <span style=color:#0b0;font-weight:700>short</span> GetShortPath(<span style=color:#0b0;font-weight:700>string</span> longPath, <span style=color:#0b0;font-weight:700>string</span> buffer, <span style=color:#0b0;font-weight:700>int</span> bufferSize);
+</span></span><span style=display:flex><span><span style=color:#b44>        [DllImport(&#34;winmm.dll&#34;, EntryPoint = &#34;mciSendString&#34;, CharSet = CharSet.Unicode)]</span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>extern</span> <span style=color:#a2f;font-weight:700>static</span> <span style=color:#0b0;font-weight:700>int</span> MciSendString(<span style=color:#0b0;font-weight:700>string</span> command, <span style=color:#0b0;font-weight:700>string</span> buffer, <span style=color:#0b0;font-weight:700>int</span> bufferSize, IntPtr callback);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#0b0;font-weight:700>bool</span> TryGetShortPath(<span style=color:#0b0;font-weight:700>string</span> longPath, <span style=color:#a2f;font-weight:700>out</span> <span style=color:#0b0;font-weight:700>string</span> shortPath)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            shortPath = <span style=color:#a2f;font-weight:700>null</span>;
+</span></span><span style=display:flex><span>            <span style=color:#0b0;font-weight:700>short</span> reqLen = GetShortPath(longPath, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>);   <span style=color:#080;font-style:italic>// 指定 null与0, 则返回需要的长度</span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (reqLen == <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            shortPath = <span style=color:#a2f;font-weight:700>new</span> <span style=color:#0b0;font-weight:700>string</span>(<span style=color:#b44>&#39;\0&#39;</span>, reqLen);   <span style=color:#080;font-style:italic>// 声明缓冲</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#0b0;font-weight:700>short</span> rstLen = GetShortPath(longPath, shortPath, reqLen);   <span style=color:#080;font-style:italic>// 转换</span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (rstLen == <span style=color:#666>0</span> || rstLen == reqLen)
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            shortPath = shortPath.TrimEnd(<span style=color:#b44>&#39;\0&#39;</span>);
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>true</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#0b0;font-weight:700>string</span> longpath;
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#0b0;font-weight:700>string</span> shortName;
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#0b0;font-weight:700>string</span> aliasName;
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> MciPlayer() { }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> MciPlayer(<span style=color:#0b0;font-weight:700>string</span> path)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (!File.Exists(path))
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>throw</span> <span style=color:#a2f;font-weight:700>new</span> FileNotFoundException(<span style=color:#b44>&#34;File not exist.&#34;</span>, path);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            longpath = path;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>void</span> MciSendStringWithCheck(<span style=color:#0b0;font-weight:700>string</span> command, <span style=color:#0b0;font-weight:700>string</span> buffer, <span style=color:#0b0;font-weight:700>int</span> bufferSize, IntPtr callback)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#0b0;font-weight:700>int</span> err = MciSendString(command, buffer, bufferSize, callback);
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (err != <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>throw</span> <span style=color:#a2f;font-weight:700>new</span> MciException(err);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#0b0;font-weight:700>string</span> StatusInfo(<span style=color:#0b0;font-weight:700>string</span> info)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#0b0;font-weight:700>string</span> buffer = <span style=color:#a2f;font-weight:700>new</span> <span style=color:#0b0;font-weight:700>string</span>(<span style=color:#b44>&#39;\0&#39;</span>, <span style=color:#666>32</span>);
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;status {aliasName} {info}&#34;</span>, buffer, <span style=color:#666>32</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> buffer.TrimEnd(<span style=color:#b44>&#39;\0&#39;</span>);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>string</span> DevicePath { <span style=color:#a2f;font-weight:700>get</span> =&gt; longpath; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>string</span> DeviceShortPath { <span style=color:#a2f;font-weight:700>get</span> =&gt; shortName; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>string</span> AliasName { <span style=color:#a2f;font-weight:700>get</span> =&gt; aliasName; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>bool</span> SetDevicePath(<span style=color:#0b0;font-weight:700>string</span> longpath)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (aliasName != <span style=color:#a2f;font-weight:700>null</span>)
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>this</span>.longpath = longpath;
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>true</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> Open()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (!TryGetShortPath(longpath, <span style=color:#a2f;font-weight:700>out</span> shortName))
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>throw</span> <span style=color:#a2f;font-weight:700>new</span> Exception(<span style=color:#b44>&#34;Get short path faield when initializing.&#34;</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            aliasName = <span style=color:#b44>$&#34;nmci{DateTime.Now.Ticks}&#34;</span>;
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;open {shortName} alias {aliasName}&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> Close()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;close {aliasName}&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            aliasName = <span style=color:#a2f;font-weight:700>null</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> Play()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;play {aliasName}&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> Resume()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;resume {aliasName}&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> Pause()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;pause {aliasName}&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> Stop()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;stop {aliasName}&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>int</span> GetPosition()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#0b0;font-weight:700>int</span>.Parse(StatusInfo(<span style=color:#b44>&#34;position&#34;</span>));
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>int</span> GetLength()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#0b0;font-weight:700>int</span>.Parse(StatusInfo(<span style=color:#b44>&#34;length&#34;</span>));
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> PlaybackState GetState()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>switch</span> (StatusInfo(<span style=color:#b44>&#34;mode&#34;</span>).ToLower())
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> <span style=color:#b44>&#34;playing&#34;</span>:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>return</span> PlaybackState.Playing;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> <span style=color:#b44>&#34;paused&#34;</span>:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>return</span> PlaybackState.Paused;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> <span style=color:#b44>&#34;stopped&#34;</span>:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>return</span> PlaybackState.Stopped;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>default</span>:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>return</span> PlaybackState.Invalid;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> PlayWait()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;play {aliasName} wait&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> PlayRepeat()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;play {aliasName} repeat&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> Seek(<span style=color:#0b0;font-weight:700>int</span> position)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;seek {aliasName} to {position}&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> SeekToStart()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;seek {aliasName} to start&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> SetSeekMode(<span style=color:#0b0;font-weight:700>bool</span> fExact)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MciSendStringWithCheck(<span style=color:#b44>$&#34;set {aliasName} seek exactly {(fExact ? &#34;</span><span style=color:#a2f;font-weight:700>on</span><span style=color:#b44>&#34; : &#34;</span>off<span style=color:#b44>&#34;)}&#34;</span>, <span style=color:#a2f;font-weight:700>null</span>, <span style=color:#666>0</span>, IntPtr.Zero);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> Dispose()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (aliasName != <span style=color:#a2f;font-weight:700>null</span>)
+</span></span><span style=display:flex><span>                Close();
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>enum</span> PlaybackState
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        Stopped,
+</span></span><span style=display:flex><span>        Playing,
+</span></span><span style=display:flex><span>        Paused,
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        Invalid = -<span style=color:#666>1</span>,
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>class</span> <span style=color:#00f>MciException</span> : Exception
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> MciError err;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>int</span> ErrorId { <span style=color:#a2f;font-weight:700>get</span> =&gt; (<span style=color:#0b0;font-weight:700>int</span>)err; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>string</span> ErrorName { <span style=color:#a2f;font-weight:700>get</span> =&gt; err.ToString(); }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>override</span> <span style=color:#0b0;font-weight:700>string</span> Message { <span style=color:#a2f;font-weight:700>get</span> =&gt; ErrorName; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> MciException() { }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> MciException(<span style=color:#0b0;font-weight:700>int</span> errorId)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (Enum.IsDefined(<span style=color:#a2f;font-weight:700>typeof</span>(MciError), errorId))
+</span></span><span style=display:flex><span>                err = (MciError)errorId;
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>else</span>
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>throw</span> <span style=color:#a2f;font-weight:700>new</span> ArgumentOutOfRangeException(<span style=color:#b44>&#34;不是正确的错误ID&#34;</span>);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> MciException(<span style=color:#0b0;font-weight:700>string</span> errorName)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (!Enum.TryParse&lt;MciError&gt;(errorName, <span style=color:#a2f;font-weight:700>out</span> err))
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>throw</span> <span style=color:#a2f;font-weight:700>new</span> ArgumentOutOfRangeException(<span style=color:#b44>&#34;不是正确的错误ID&#34;</span>);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>enum</span> MciError
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            MCIERR_NO_ERROR = <span style=color:#666>0</span>,
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            MCIERR_INVALID_DEVICE_ID = <span style=color:#666>257</span>,
+</span></span><span style=display:flex><span>            MCIERR_UNRECOGNIZED_KEYWORD = <span style=color:#666>259</span>,
+</span></span><span style=display:flex><span>            MCIERR_UNRECOGNIZED_COMMAND = <span style=color:#666>261</span>,
+</span></span><span style=display:flex><span>            MCIERR_HARDWARE = <span style=color:#666>262</span>,
+</span></span><span style=display:flex><span>            MCIERR_INVALID_DEVICE_NAME = <span style=color:#666>263</span>,
+</span></span><span style=display:flex><span>            MCIERR_OUT_OF_MEMORY = <span style=color:#666>264</span>,
+</span></span><span style=display:flex><span>            MCIERR_DEVICE_OPEN = <span style=color:#666>265</span>,
+</span></span><span style=display:flex><span>            MCIERR_CANNOT_LOAD_DRIVER = <span style=color:#666>266</span>,
+</span></span><span style=display:flex><span>            MCIERR_MISSING_COMMAND_STRING = <span style=color:#666>267</span>,
+</span></span><span style=display:flex><span>            MCIERR_PARAM_OVERFLOW = <span style=color:#666>268</span>,
+</span></span><span style=display:flex><span>            MCIERR_MISSING_STRING_ARGUMENT = <span style=color:#666>269</span>,
+</span></span><span style=display:flex><span>            MCIERR_BAD_INTEGER = <span style=color:#666>270</span>,
+</span></span><span style=display:flex><span>            MCIERR_PARSER_INTERNAL = <span style=color:#666>271</span>,
+</span></span><span style=display:flex><span>            MCIERR_DRIVER_INTERNAL = <span style=color:#666>272</span>,
+</span></span><span style=display:flex><span>            MCIERR_MISSING_PARAMETER = <span style=color:#666>273</span>,
+</span></span><span style=display:flex><span>            MCIERR_UNSUPPORTED_FUNCTION = <span style=color:#666>274</span>,
+</span></span><span style=display:flex><span>            MCIERR_FILE_NOT_FOUND = <span style=color:#666>275</span>,
+</span></span><span style=display:flex><span>            MCIERR_DEVICE_NOT_READY = <span style=color:#666>276</span>,
+</span></span><span style=display:flex><span>            MCIERR_INTERNAL = <span style=color:#666>277</span>,
+</span></span><span style=display:flex><span>            MCIERR_DRIVER = <span style=color:#666>278</span>,
+</span></span><span style=display:flex><span>            MCIERR_CANNOT_USE_ALL = <span style=color:#666>279</span>,
+</span></span><span style=display:flex><span>            MCIERR_MULTIPLE = <span style=color:#666>280</span>,
+</span></span><span style=display:flex><span>            MCIERR_EXTENSION_NOT_FOUND = <span style=color:#666>281</span>,
+</span></span><span style=display:flex><span>            MCIERR_OUTOFRANGE = <span style=color:#666>282</span>,
+</span></span><span style=display:flex><span>            MCIERR_FLAGS_NOT_COMPATIBLE = <span style=color:#666>284</span>,
+</span></span><span style=display:flex><span>            MCIERR_FILE_NOT_SAVED = <span style=color:#666>286</span>,
+</span></span><span style=display:flex><span>            MCIERR_DEVICE_TYPE_REQUIRED = <span style=color:#666>287</span>,
+</span></span><span style=display:flex><span>            MCIERR_DEVICE_LOCKED = <span style=color:#666>288</span>,
+</span></span><span style=display:flex><span>            MCIERR_DUPLICATE_ALIAS = <span style=color:#666>289</span>,
+</span></span><span style=display:flex><span>            MCIERR_BAD_CONSTANT = <span style=color:#666>290</span>,
+</span></span><span style=display:flex><span>            MCIERR_MUST_USE_SHAREABLE = <span style=color:#666>291</span>,
+</span></span><span style=display:flex><span>            MCIERR_MISSING_DEVICE_NAME = <span style=color:#666>292</span>,
+</span></span><span style=display:flex><span>            MCIERR_BAD_TIME_FORMAT = <span style=color:#666>293</span>,
+</span></span><span style=display:flex><span>            MCIERR_NO_CLOSING_QUOTE = <span style=color:#666>294</span>,
+</span></span><span style=display:flex><span>            MCIERR_DUPLICATE_FLAGS = <span style=color:#666>295</span>,
+</span></span><span style=display:flex><span>            MCIERR_INVALID_FILE = <span style=color:#666>296</span>,
+</span></span><span style=display:flex><span>            MCIERR_NULL_PARAMETER_BLOCK = <span style=color:#666>297</span>,
+</span></span><span style=display:flex><span>            MCIERR_UNNAMED_RESOURCE = <span style=color:#666>298</span>,
+</span></span><span style=display:flex><span>            MCIERR_NEW_REQUIRES_ALIAS = <span style=color:#666>299</span>,
+</span></span><span style=display:flex><span>            MCIERR_NOTIFY_ON_AUTO_OPEN = <span style=color:#666>300</span>,
+</span></span><span style=display:flex><span>            MCIERR_NO_ELEMENT_ALLOWED = <span style=color:#666>301</span>,
+</span></span><span style=display:flex><span>            MCIERR_NONAPPLICABLE_FUNCTION = <span style=color:#666>302</span>,
+</span></span><span style=display:flex><span>            MCIERR_ILLEGAL_FOR_AUTO_OPEN = <span style=color:#666>303</span>,
+</span></span><span style=display:flex><span>            MCIERR_FILENAME_REQUIRED = <span style=color:#666>304</span>,
+</span></span><span style=display:flex><span>            MCIERR_EXTRA_CHARACTERS = <span style=color:#666>305</span>,
+</span></span><span style=display:flex><span>            MCIERR_DEVICE_NOT_INSTALLED = <span style=color:#666>306</span>,
+</span></span><span style=display:flex><span>            MCIERR_GET_CD = <span style=color:#666>307</span>,
+</span></span><span style=display:flex><span>            MCIERR_SET_CD = <span style=color:#666>308</span>,
+</span></span><span style=display:flex><span>            MCIERR_SET_DRIVE = <span style=color:#666>309</span>,
+</span></span><span style=display:flex><span>            MCIERR_DEVICE_LENGTH = <span style=color:#666>310</span>,
+</span></span><span style=display:flex><span>            MCIERR_DEVICE_ORD_LENGTH = <span style=color:#666>311</span>,
+</span></span><span style=display:flex><span>            MCIERR_NO_INTEGER = <span style=color:#666>312</span>,
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            MCIERR_WAVE_OUTPUTSINUSE = <span style=color:#666>320</span>,
+</span></span><span style=display:flex><span>            MCIERR_WAVE_SETOUTPUTINUSE = <span style=color:#666>321</span>,
+</span></span><span style=display:flex><span>            MCIERR_WAVE_INPUTSINUSE = <span style=color:#666>322</span>,
+</span></span><span style=display:flex><span>            MCIERR_WAVE_SETINPUTINUSE = <span style=color:#666>323</span>,
+</span></span><span style=display:flex><span>            MCIERR_WAVE_OUTPUTUNSPECIFIED = <span style=color:#666>324</span>,
+</span></span><span style=display:flex><span>            MCIERR_WAVE_INPUTUNSPECIFIED = <span style=color:#666>325</span>,
+</span></span><span style=display:flex><span>            MCIERR_WAVE_OUTPUTSUNSUITABLE = <span style=color:#666>326</span>,
+</span></span><span style=display:flex><span>            MCIERR_WAVE_SETOUTPUTUNSUITABLE = <span style=color:#666>327</span>,
+</span></span><span style=display:flex><span>            MCIERR_WAVE_INPUTSUNSUITABLE = <span style=color:#666>328</span>,
+</span></span><span style=display:flex><span>            MCIERR_WAVE_SETINPUTUNSUITABLE = <span style=color:#666>329</span>,
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            MCIERR_SEQ_DIV_INCOMPATIBLE = <span style=color:#666>336</span>,
+</span></span><span style=display:flex><span>            MCIERR_SEQ_PORT_INUSE = <span style=color:#666>337</span>,
+</span></span><span style=display:flex><span>            MCIERR_SEQ_PORT_NONEXISTENT = <span style=color:#666>338</span>,
+</span></span><span style=display:flex><span>            MCIERR_SEQ_PORT_MAPNODEVICE = <span style=color:#666>339</span>,
+</span></span><span style=display:flex><span>            MCIERR_SEQ_PORT_MISCERROR = <span style=color:#666>340</span>,
+</span></span><span style=display:flex><span>            MCIERR_SEQ_TIMER = <span style=color:#666>341</span>,
+</span></span><span style=display:flex><span>            MCIERR_SEQ_PORTUNSPECIFIED = <span style=color:#666>342</span>,
+</span></span><span style=display:flex><span>            MCIERR_SEQ_NOMIDIPRESENT = <span style=color:#666>343</span>,
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            MCIERR_NO_WINDOW = <span style=color:#666>346</span>,
+</span></span><span style=display:flex><span>            MCIERR_CREATEWINDOW = <span style=color:#666>347</span>,
+</span></span><span style=display:flex><span>            MCIERR_FILE_READ = <span style=color:#666>348</span>,
+</span></span><span style=display:flex><span>            MCIERR_FILE_WRITE = <span style=color:#666>349</span>,
+</span></span><span style=display:flex><span>            MCIERR_NO_IDENTITY = <span style=color:#666>350</span>,
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></li></ul><p><br><br><br><br><br>如果有什么建议或者这个类有可改进的地方, 欢迎留言哦~ n(*≧▽≦*)n</p></div><footer class=post-footer><div class=post-tags><a href=/tags/.net rel=tag title=.NET>#.NET#</a>
+<a href=/tags/c rel=tag title=C#>#C##</a>
+<a href=/tags/%e9%9f%b3%e9%a2%91 rel=tag title=音频>#音频#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class=article-copyright><div class=article-copyright-info><p><span>声明：</span>[C#] 音乐播放 3 种方式 Demo 与 MCI 音乐播放器封装类</p><p><span>链接：</span>https://slimenull.top/post/csharp-playmusic/</p><p><span>作者：</span>史莱姆诺尔</p><p><span>声明： </span>本博客文章除特别声明外，均采用 <a href=https://creativecommons.org/licenses/by-nc-sa/3.0/ target=_blank style=text-decoration:underline>CC BY-NC-SA 3.0</a>许可协议，转载请注明出处！</p></div></div><div class=clear></div></div><div class=reward-qr-info><div>创作实属不易，如有帮助，那就打赏博主些许茶钱吧 ^_^</div><button id=rewardButton disable=enable onclick='var qr=document.getElementById("QR");qr.style.display==="none"?qr.style.display="block":qr.style.display="none"'>
+<span>赏</span></button><div id=QR style=display:none><div id=wechat style=display:inline-block><img id=wechat_qr src=/img/wechat-pay.png alt="WeChat Pay"><p>微信打赏</p></div><div id=alipay style=display:inline-block><img id=alipay_qr src=/img/ali-pay.png alt=Alipay><p>支付宝打赏</p></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://slimenull.top/post/linux-cmdfullname/ rel=next title="[Linux] Linux 指令与全称"><i class="fa fa-chevron-left"></i> [Linux] Linux 指令与全称</a></div><div class="post-nav-prev post-nav-item"><a href=https://slimenull.top/post/win32-mci/ rel=prev title="[Win32] MCI 详解与封装类, MCI 播放音乐, 获取播放状态, 获取音频长度, 进度调整">[Win32] MCI 详解与封装类, MCI 播放音乐, 获取播放状态, 获取音频长度, 进度调整
+<i class="fa fa-chevron-right"></i></a></div></div><div id=wcomments></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+<span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><section class="site-overview sidebar-panel sidebar-panel-active"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/avatar.jpg alt=史莱姆诺尔><p class=site-author-name itemprop=name>史莱姆诺尔</p><p class="site-description motion-element" itemprop=description>我很可爱, 请给我糖 o(*////▽////*)q</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>70</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>0</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>39</span>
+<span class=site-state-item-name>标签</span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/slimenull/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
+GitHub</a></span>
+<span class=links-of-author-item><a href=https://space.bilibili.com/441842015 target=_blank title=Bilibili><i class="fa fa-fw fa-tv"></i>
+Bilibili</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-inline"><div class=links-of-blogroll-title><i class="fa fa-fw fa-globe"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://vertillusion.xyz/ title=Vertillusion target=_blank>Vertillusion</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
+标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/.net>.Net</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/c>C#</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E7%AC%94%E8%AE%B0>笔记</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E8%BD%AE%E5%AD%90>轮子</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E5%8F%82%E8%80%83>参考</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E7%AE%97%E6%B3%95>算法</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E7%BB%8F%E9%AA%8C>经验</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/wpf>Wpf</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/linux>Linux</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95>踩坑记录</a></li></ul></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span>
+<span class=copyright-author>诺尔的小窝</span></div><div class=powered-info><span class=powered-by>Powered by - <a class=powered-link href=//gohugo.io target=_blank title=hugo>Hugo v0.95.0</a></span>
+<span class=separator-line>/</span>
+<span class=theme-info>Theme by - <a class=powered-link href=//github.com/elkan1788/hugo-theme-next target=_blank>NexT</a></span></div><div class=vistor-info><script async src=//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js></script>
+<span class=site-uv><i class="fa fa-user"></i>
+<span class=busuanzi-value id=busuanzi_value_site_uv></span></span>
+<span class=separator-line>/</span>
+<span class=site-pv><i class="fa fa-eye"></i>
+<span class=busuanzi-value id=busuanzi_value_site_pv></span></span></div><div class=license-info><span class=storage-info>Storage by
+<a href=https://www.ucloud.cn/ style=font-weight:700 target=_blank>UCloud云存储</a></span>
+<span class=separator-line>/</span>
+<span class=license-num><a href=http://beian.miit.gov.cn target=_blank>粤ICP备18047355号</a></span></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i>
+<span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript src=//cdn.bootcdn.net/ajax/libs/jquery/2.1.4/jquery.min.js></script>
+<script type=text/javascript src=/js/search.js></script>
+<script type=text/javascript src=/js/affix.js></script>
+<script type=text/javascript src=/js/scrollspy.js></script>
+<script type=text/javascript>function detectIE(){var e=window.navigator.userAgent,t=e.indexOf("MSIE "),n=e.indexOf("Trident/"),s=e.indexOf("Edge/");return t>0||n>0||s>0?-1:1}function getCntViewHeight(){var t=$("#content").height(),e=$(window).height(),n=t>e?t-e:$(document).height()-e;return n}function getScrollbarWidth(){var e=$("<div />").addClass("scrollbar-measure").prependTo("body"),t=e[0],n=t.offsetWidth-t.clientWidth;return e.remove(),n}function registerBackTop(){var t=50,e=$(".back-to-top");$(window).on("scroll",function(){e.toggleClass("back-to-top-on",window.pageYOffset>t);var s=$(window).scrollTop(),o=getCntViewHeight(),i=s/o,n=Math.round(i*100),a=n>100?100:n;$("#scrollpercent>span").html(a)}),e.on("click",function(){$("html,body").animate({scrollTop:0,screenLeft:0},800)})}function initScrollSpy(){var e=".post-toc",s=$(e),t=".active-current";s.on("activate.bs.scrollspy",function(){var t=$(e+" .active").last();n(),t.addClass("active-current")}).on("clear.bs.scrollspy",n),$("body").scrollspy({target:e});function n(){$(e+" "+t).removeClass(t.substring(1))}}function initAffix(){var e=$(".header-inner").height(),t=parseInt($(".main").css("padding-bottom"),10),n=e+10;$(".sidebar-inner").affix({offset:{top:n,bottom:t}}),$(document).on("affixed.bs.affix",function(){updateTOCHeight(document.body.clientHeight-100)})}function initTOCDimension(){$(window).on("resize",function(){e&&clearTimeout(e),e=setTimeout(function(){var e=document.body.clientHeight-100;updateTOCHeight(e)},0)}),updateTOCHeight(document.body.clientHeight-100);var e,t=getScrollbarWidth();$(".post-toc").css("width","calc(100% + "+t+"px)")}function updateTOCHeight(e){e=e||"auto",$(".post-toc").css("max-height",e)}$(function(){var t=$(".header-inner").height()+10,n,s,e,o;$("#sidebar").css({'margin-top':t}).show(),n=parseInt($("#sidebar").css("margin-top")),s=parseInt($(".sidebar-inner").css("height")),e=n+s,o=$(".content-wrap").height(),o<e&&$(".content-wrap").css("min-height",e),$(".site-nav-toggle").on("click",function(){var e=$(".site-nav"),o=$(".toggle"),t="site-nav-on",i="toggle-close",n=e.hasClass(t),a=n?"slideUp":"slideDown",s=n?"removeClass":"addClass";e.stop()[a]("normal",function(){e[s](t),o[s](i)})}),registerBackTop(),initScrollSpy(),initAffix(),initTOCDimension(),$(".sidebar-nav-toc").click(function(){$(this).addClass("sidebar-nav-active"),$(this).next().removeClass("sidebar-nav-active"),$("."+$(this).next().attr("data-target")).toggle(500),$("."+$(this).attr("data-target")).toggle(500)}),$(".sidebar-nav-overview").click(function(){$(this).addClass("sidebar-nav-active"),$(this).prev().removeClass("sidebar-nav-active"),$("."+$(this).prev().attr("data-target")).toggle(500),$("."+$(this).attr("data-target")).toggle(500)})})</script><script src=//cdn.bootcdn.net/ajax/libs/imageviewer/0.1.0/viewer.min.js></script>
+<script type=text/javascript>$(function(){$(".post-body").viewer()})</script><script type=text/javascript>$(function(){detectIE()>0?$.getScript(document.location.protocol+"//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js",function(){new Waline({el:"#wcomments",visitor:!0,avatar:"wavatar",avatarCDN:"https://sdn.geekzu.org/avatar/",avatarForce:!1,wordLimit:"200",placeholder:" 欢迎留下您的宝贵建议，请填写您的昵称和邮箱便于后续交流. ^_^ ",requiredFields:["nick","mail"],serverURL:"https://hugo-blog-api-slimenull.vercel.app/",lang:"zh-cn"})}):$("#wcomments").html("抱歉，Waline插件不支持IE，建议使用Chrome浏览器。")})</script><script type=text/javascript src="//s7.addthis.com/js/300/addthis_widget.js#pubid=623eced69d98b93c"></script>
+<script>(function(){var e=document.createElement("script"),t,n=window.location.protocol.split(":")[0];n==="https"?e.src="https://zz.bdstatic.com/linksubmit/push.js":e.src="http://push.zhanzhang.baidu.com/push.js",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script></body></html>

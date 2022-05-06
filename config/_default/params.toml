@@ -1,0 +1,36 @@
+[TagsCloud]
+  Enable = true
+  Limit = 10
+
+[Share]
+  Enable = true
+  AddthisId = "623eced69d98b93c"
+
+[Comment]
+  Enable = true
+  Module = "Waline"
+  LiveReId = "Your LiveReId"
+  WalineSerURL = "https://hugo-blog-api-slimenull.vercel.app/"
+
+  # If Module is "Utterances",see https://utteranc.es/
+  UtterancesRepo = "owner/repo"
+  UtterancesTheme = "github-light"
+  UtterancesTitle = "pathname"
+
+[LeanCloud]
+  AppId = "AuOjYxlejNhbYpgnsBVpqMAa-MdYXbMMI"
+  AppKey = "VjO8YK4ke07Cy4ioLRggUoWO"
+  ServerURL = "https://auojyxle.api.lncldglobal.com"
+
+[Statis]
+  BusuanziCounter = true
+#  CNNZSiteId = "Your CNNZSiteId"
+#  BaiduSiteId = "Your BaiduSiteId"
+#  GoogleSiteId = "Your GoogleSiteId"
+
+[OnlineIM]
+  Enable = false
+#  DaoVoiceId = "Your DaoVoiceId"
+
+[Others]
+#  RevolverMapId = "Your RevolverMapId"

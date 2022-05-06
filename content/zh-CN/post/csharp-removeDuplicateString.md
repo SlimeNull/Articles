@@ -1,0 +1,108 @@
+---
+title: "[C#] 数组去重: 超高速字符串去重 (可保留原顺序)"
+date: 2020-06-27T05:43:32+08:00
+tags:
+  - .NET
+  - C#
+  - 笔记
+  - 算法
+---
+
+数组去重, 如果使用遍历并检查 Contains 的方法, 那么在处理大量数据的时候未免太慢, 另一种方法是先进行排序(例如桶排序), 那么只需要遍历一次就可以去除重复
+
+<!--more-->
+
+##### 代码适用于:
+
+0. 将字符串数组中的重复元素去除, 仅留下一个
+
+##### 应用场景:
+
+0. 你有一个超级长的文本文件, 这里面每一行都是一条数据, 例如这些数据是用爬虫获取的搜索关键字, 但可能含有重复, 你现在需要将它们去重. 这个算法可以帮助你快速完成去重的工作
+
+##### 局限性:
+
+0. 下面将介绍两种算法
+1. 一种是先进行排序, 这时, 相同的元素都在一起了, 然后再进行一次遍历去重, 那么除了排序的时间, 仅进行一次遍历就可以去重, 速度很快, 但原有顺序改变了.
+2. 第二种算法是较为特殊的算法, 借助了引用类型这个特性, 可以保证原有顺序不变, 但需要定义字典和列表, 也就是说要多需要一些内存.
+
+## 2. 算法的主要内容
+
+##### 主要原理
+1. 通过排序, 将相同的元素凑到一起, 那么只需要比对当前元素和一个相邻元素就可以得出该元素是否是重复的. 那么只需要遍历一次就可以做到去重.
+2. 在此基础上, 用Dictionary的根据键可以快速访问值得特性, 将原字符串数组的元素索引与元素引用保存到Dictionary中, 就可以通过索引将字符串数组还原到原来的顺序, 详细还请看代码
+
+##### 实例代码
+
+```csharp
+string[] RemoveSameElement(string[] source)
+{
+    List<string> result = source.ToList();
+    result.Sort();
+    for(int i = 1; i < source.Length;)
+    {
+        if (result[i] == result[i - 1])
+        {
+            result.RemoveAt(i);
+        }
+        else
+        {
+            i++;
+        }
+    }
+    return result.ToArray();
+}
+```
+
+```csharp
+string[] RemoveSameElement(string[] source)
+{
+    Dictionary<int, StringInfo> d = new Dictionary<int, StringInfo>();
+    List<StringInfo> temp = new List<StringInfo>();
+    List<string> result = new List<string>();
+    for (int i = 0; i < source.Length; i++)
+    {
+        d.Add(i, new StringInfo(source[i]));
+        temp.Add(d[i]);
+    }
+    temp.Sort();
+    for (int i = 0; i < temp.Count;)
+    {
+        if (temp[i] != null)
+        {
+            temp.RemoveAt(i);
+        }
+        else
+        {
+            i++;
+        }
+    }
+    foreach(StringInfo i in temp)
+    {
+        result.Add(i.Value);
+    }
+    return result.ToArray();
+}
+// 通过这个StringInfo类来实现对string的引用
+class StringInfo : IComparable
+{
+    public StringInfo(string value)
+    {
+        Value = value;
+    }
+    public string Value;
+    public int CompareTo(object obj)
+    {
+        if (obj.GetType() == GetType())
+        {
+            return Value.CompareTo((obj as StringInfo).Value);
+        }
+        else
+        {
+            throw new ArgumentException("参数必须为StringInfo类型");
+        }
+    }
+}
+```
+
+> 这个算法只是偶然间想到的, 不喜勿喷

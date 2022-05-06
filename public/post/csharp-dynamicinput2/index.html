@@ -1,0 +1,467 @@
+<!doctype html><html lang=zh-cn dir=content/zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=content-security-policy content="upgrade-insecure-requests"><title>[C#] 控制台动态输入 - 诺尔的小窝</title><meta name=keywords content="史莱姆诺尔,萌诺尔,诺尔,博客,程序员,自学,编程,笔记,技术,分享,.NET,C#"><meta name=author content="史莱姆诺尔"><meta property="og:title" content="[C#] 控制台动态输入"><meta property="og:site_name" content="诺尔的小窝"><meta property="og:image" content="/img/author.jpg"><meta name=title content="[C#] 控制台动态输入 - 诺尔的小窝"><meta name=description content="为了更好的开源世界~"><link rel="shortcut icon" href=/img/favicon.ico><link rel=apple-touch-icon href=/img/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=/img/apple-touch-icon.png><link href=//cdn.bootcdn.net/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css rel=stylesheet type=text/css><link href=//cdn.bootcdn.net/ajax/libs/imageviewer/0.1.0/viewer.min.css rel=stylesheet><link href=/css/main.css rel=stylesheet type=text/css><link href=/css/syntax.css rel=stylesheet type=text/css></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle role=button style=opacity:1;top:0><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><div class=multi-lang-switch><i class="fa fa-fw fa-language" style=margin-right:5px></i>
+<a class=lang-link id=zh-cn href=#>中文</a></div><div class=custom-logo-site-title><a href=/ class=brand rel=start><span class=logo-line-before><i></i></span>
+<span class=site-title>诺尔的小窝</span>
+<span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>前进! 前进! 不择手段的前进!</p></div><div class=site-nav-right><div class="toggle popup-trigger" style=opacity:1;top:0><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class=menu-item><a href=/post rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=/about.html rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于我</a></li><li class=menu-item><a href=/404.html rel=section><i class="menu-item-icon fa fa-fw fa-heartbeat"></i><br>公益404</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class=site-search><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class=search-icon><i class="fa fa-search"></i></span>
+<span class=popup-btn-close><i class="fa fa-times-circle"></i></span><div class=local-search-input-wrapper><input autocomplete=off placeholder=搜索关键字... spellcheck=false type=text id=local-search-input autocapitalize=none autocorrect=off></div></div><div id=local-search-result></div></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://slimenull.top/post/csharp-dynamicinput2/ itemprop=url>[C#] 控制台动态输入</a></h1><div class=post-meta><span class=post-time><i class="fa fa-calendar-o fa-fw"></i>
+<span class=post-meta-item-text>时间：</span>
+<time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2020-12-30">2020-12-30</time></span>
+<span>|
+<i class="fa fa-file-word-o fa-fw"></i>
+<span class=post-meta-item-text>字数：</span>
+<span class=leancloud-world-count>1871 字</span></span>
+<span>|
+<i class="fa fa-eye fa-fw"></i>
+<span class=post-meta-item-text>阅读：</span>
+<span class=leancloud-view-count>4分钟</span></span>
+<span id=/post/csharp-dynamicinput2/ class=leancloud_visitors data-flag-title="[C#] 控制台动态输入">|
+<i class="fa fa-binoculars fa-fw"></i>
+<span class=post-meta-item-text>阅读次数：</span>
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>在输入的过程中就能获取, 设置已经输入的内容, 甚至移动输入内容在控制台中的显示位置</p><h2 id=简介>简介：</h2><ul><li>这是一个类库，正如标题所说，它具有这两个最基本而又强大的功能，有时候，我们可能会需要在ReadLine的过程中就访问已经输入了的内容，但.NET又没有提供这样的功能。</li></ul><blockquote><p>其实在之前已经写过一个文章，也是动态输入，但是太烂了地址：<a href=https://blog.csdn.net/m0_46555380/article/details/105337734>旧的动态输入</a></p></blockquote><h2 id=功能>功能：</h2><ol><li>在ReadLine的时候就读取已经输入了的内容，提供了完整的封装</li><li>移动已经输入了的内容，你可以在输入时就将输入内容移动到控制台的任意位置</li><li>光标移动，插入和覆盖模式，HOME和END键的处理。</li><li>字符输入事件，在用户按下后，会有两个事件触发，可以通过这两个事件来过滤用户输入内容，例如，仅允许输入数字，只需要判断事件参数即可。</li><li>密码输入模式，与Linux的密码输入一致，不会显示任何内容，但功能按键以及输入事件仍然可用</li><li>历史记录功能，它模拟的是Linux系统的命令行输入历史记录功能，比Windows的历史记录功能好那么一丢丢。</li><li>（后续会增加更多功能，如果我需要或者你需要的话。</li></ol><h2 id=原理>原理：</h2><ul><li>其实就是对 Console.ReadKey() 的妙用</li></ul><h2 id=使用方式>使用方式：</h2><ol><li>实例化一个DynamicScanner对象。</li><li>调用DynamicScanner的ReadLine()方法或者QuietReadLine()方法</li><li>读取正在输入的内容，请使用类实例的InputtingString属性</li><li>获取已输入内容的起始位置以及末端位置, 可使用StartLeft, StartTop, EndLeft, EndTop属性</li><li>CharInput事件是当字符输入并且已经录入后触发的，PreviewCharInput是字符已经输入，但是并未录入的事件，CharInput要求返回值指定是否停止输入，PreviewCharInput要求返回值指定是否取消录入</li></ol><blockquote><p>如果代码有部分可以优化的部分，或者你有好的点子，欢迎私信我哦~
+2021 / 1 / 5: 更新了源代码, 优化了一个小细节: 当此次输入为空时, 不保存历史记录</p></blockquote><h2 id=源代码>源代码：</h2><ul><li>创建一个名为Null.DynamicScanner.cs的文件，粘贴以下内容，添加到你的项目中，即可使用</li></ul><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System</span>;
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System.Collections.Generic</span>;
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System.Linq</span>;
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System.Text</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>namespace</span> <span style=color:#00f;font-weight:700>Null.Library</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>class</span> <span style=color:#00f>DynamicScanner</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#0b0;font-weight:700>int</span> startTop, startLeft, endTop, endLeft, currentTop, currentLeft, tempEndTop, tempEndLeft;
+</span></span><span style=display:flex><span>        <span style=color:#0b0;font-weight:700>int</span> inputIndex, historyIndex;
+</span></span><span style=display:flex><span>        <span style=color:#0b0;font-weight:700>bool</span> insertMode = <span style=color:#a2f;font-weight:700>true</span>, inputting = <span style=color:#a2f;font-weight:700>false</span>, cursorVisible;
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#a2f;font-weight:700>readonly</span> <span style=color:#0b0;font-weight:700>object</span> printting = <span style=color:#a2f;font-weight:700>false</span>;                <span style=color:#080;font-style:italic>// 用于互斥锁</span>
+</span></span><span style=display:flex><span>        ConsoleKeyInfo readedKey;
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#a2f;font-weight:700>readonly</span> List&lt;List&lt;<span style=color:#0b0;font-weight:700>char</span>&gt;&gt; inputHistory;
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> List&lt;<span style=color:#0b0;font-weight:700>char</span>&gt; inputtingChars;
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#0b0;font-weight:700>string</span> promptText = <span style=color:#0b0;font-weight:700>string</span>.Empty;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>delegate</span> <span style=color:#0b0;font-weight:700>bool</span> CharInputEventHandler(DynamicScanner sender, ConsoleKeyInfo c);
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>delegate</span> <span style=color:#0b0;font-weight:700>bool</span> PreviewCharInputEventHandler(DynamicScanner sender, ConsoleKeyInfo c);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>event</span> CharInputEventHandler CharInput;
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>event</span> PreviewCharInputEventHandler PreviewCharInput;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> DynamicScanner()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            inputHistory = <span style=color:#a2f;font-weight:700>new</span> List&lt;List&lt;<span style=color:#0b0;font-weight:700>char</span>&gt;&gt;();
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>string</span> InputtingString
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>get</span>
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>return</span> inputtingChars == <span style=color:#a2f;font-weight:700>null</span> ? <span style=color:#0b0;font-weight:700>string</span>.Empty : <span style=color:#a2f;font-weight:700>new</span> <span style=color:#0b0;font-weight:700>string</span>(inputtingChars.ToArray());
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>int</span> StartTop { <span style=color:#a2f;font-weight:700>get</span> =&gt; startTop; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>int</span> StartLeft { <span style=color:#a2f;font-weight:700>get</span> =&gt; startLeft; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>int</span> EndTop { <span style=color:#a2f;font-weight:700>get</span> =&gt; endTop; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>int</span> EndLeft { <span style=color:#a2f;font-weight:700>get</span> =&gt; endLeft; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>int</span> CurrentTop { <span style=color:#a2f;font-weight:700>get</span> =&gt; currentTop; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>int</span> CurrentLeft { <span style=color:#a2f;font-weight:700>get</span> =&gt; currentLeft; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>bool</span> IsInputting { <span style=color:#a2f;font-weight:700>get</span> =&gt; inputting; }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>string</span> PromptText { <span style=color:#a2f;font-weight:700>get</span> =&gt; promptText; <span style=color:#a2f;font-weight:700>set</span> =&gt; promptText = <span style=color:#a2f;font-weight:700>value</span>; }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>static</span> <span style=color:#0b0;font-weight:700>bool</span> IsControlKey(ConsoleKey k)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> k == ConsoleKey.Enter ||
+</span></span><span style=display:flex><span>                k == ConsoleKey.UpArrow ||
+</span></span><span style=display:flex><span>                k == ConsoleKey.DownArrow ||
+</span></span><span style=display:flex><span>                k == ConsoleKey.LeftArrow ||
+</span></span><span style=display:flex><span>                k == ConsoleKey.RightArrow ||
+</span></span><span style=display:flex><span>                k == ConsoleKey.Insert ||
+</span></span><span style=display:flex><span>                k == ConsoleKey.Backspace ||
+</span></span><span style=display:flex><span>                k == ConsoleKey.Delete ||
+</span></span><span style=display:flex><span>                k == ConsoleKey.Home ||
+</span></span><span style=display:flex><span>                k == ConsoleKey.End;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#a2f;font-weight:700>void</span> InitReadLine()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            startTop = Console.CursorTop;
+</span></span><span style=display:flex><span>            startLeft = Console.CursorLeft;
+</span></span><span style=display:flex><span>            inputIndex = <span style=color:#666>0</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (inputHistory.Count == <span style=color:#666>0</span> || inputHistory[inputHistory.Count - <span style=color:#666>1</span>].Count != <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                historyIndex = inputHistory.Count;
+</span></span><span style=display:flex><span>                inputHistory.Add(<span style=color:#a2f;font-weight:700>new</span> List&lt;<span style=color:#0b0;font-weight:700>char</span>&gt;());
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>else</span>
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                historyIndex = inputHistory.Count - <span style=color:#666>1</span>;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            inputtingChars = inputHistory[historyIndex];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            inputting = <span style=color:#a2f;font-weight:700>true</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#0b0;font-weight:700>bool</span> DealInputChar()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>switch</span> (readedKey.Key)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.Enter:
+</span></span><span style=display:flex><span>                    Console.WriteLine();
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>true</span>;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.UpArrow:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>if</span> (historyIndex &gt; <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        historyIndex--;
+</span></span><span style=display:flex><span>                        UpdateInputState();
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.DownArrow:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>if</span> (historyIndex &lt; inputHistory.Count - <span style=color:#666>1</span>)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        historyIndex++;
+</span></span><span style=display:flex><span>                        UpdateInputState();
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.LeftArrow:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>if</span> (inputIndex &gt; <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        inputIndex--;
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.RightArrow:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>if</span> (inputIndex &lt; inputtingChars.Count)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        inputIndex++;
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.Insert:
+</span></span><span style=display:flex><span>                    insertMode = !insertMode;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.Backspace:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>if</span> (inputIndex &gt; <span style=color:#666>0</span>)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        inputtingChars.RemoveAt(inputIndex - <span style=color:#666>1</span>);
+</span></span><span style=display:flex><span>                        inputIndex--;
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.Delete:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>if</span> (inputIndex &lt; inputtingChars.Count)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        inputtingChars.RemoveAt(inputIndex);
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.Home:
+</span></span><span style=display:flex><span>                    inputIndex = <span style=color:#666>0</span>;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.End:
+</span></span><span style=display:flex><span>                    inputIndex = inputtingChars.Count;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>default</span>:
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>if</span> (inputIndex == inputtingChars.Count)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        inputtingChars.Add(readedKey.KeyChar);
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>else</span>
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        <span style=color:#a2f;font-weight:700>if</span> (insertMode)
+</span></span><span style=display:flex><span>                        {
+</span></span><span style=display:flex><span>                            inputtingChars.Insert(inputIndex, readedKey.KeyChar);
+</span></span><span style=display:flex><span>                        }
+</span></span><span style=display:flex><span>                        <span style=color:#a2f;font-weight:700>else</span>
+</span></span><span style=display:flex><span>                        {
+</span></span><span style=display:flex><span>                            inputtingChars[inputIndex] = readedKey.KeyChar;
+</span></span><span style=display:flex><span>                        }
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    inputIndex++;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#a2f;font-weight:700>void</span> PrintInputString()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>lock</span>(printting)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                cursorVisible = Console.CursorVisible;
+</span></span><span style=display:flex><span>                Console.CursorVisible = <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>                Console.SetCursorPosition(startLeft, startTop);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                Console.Write(promptText);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (inputIndex == inputtingChars.Count)
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>for</span> (<span style=color:#0b0;font-weight:700>int</span> i = <span style=color:#666>0</span>; i &lt; inputtingChars.Count; i++)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        Console.Write(inputtingChars[i]);
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    currentLeft = Console.CursorLeft;
+</span></span><span style=display:flex><span>                    currentTop = Console.CursorTop;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>else</span>
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>for</span> (<span style=color:#0b0;font-weight:700>int</span> i = <span style=color:#666>0</span>; i &lt; inputtingChars.Count; i++)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        <span style=color:#a2f;font-weight:700>if</span> (inputIndex == i)
+</span></span><span style=display:flex><span>                        {
+</span></span><span style=display:flex><span>                            currentLeft = Console.CursorLeft;
+</span></span><span style=display:flex><span>                            currentTop = Console.CursorTop;
+</span></span><span style=display:flex><span>                        }
+</span></span><span style=display:flex><span>                        Console.Write(inputtingChars[i]);
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                tempEndLeft = Console.CursorLeft;
+</span></span><span style=display:flex><span>                tempEndTop = Console.CursorTop;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>while</span> (Console.CursorTop &lt; endTop || Console.CursorLeft &lt; endLeft)
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    Console.Write(<span style=color:#b44>&#39; &#39;</span>);
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                endLeft = tempEndLeft;
+</span></span><span style=display:flex><span>                endTop = tempEndTop;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                Console.SetCursorPosition(currentLeft, currentTop);
+</span></span><span style=display:flex><span>                Console.CursorVisible = cursorVisible;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#a2f;font-weight:700>void</span> UpdateInputState()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            inputtingChars = inputHistory[historyIndex];
+</span></span><span style=display:flex><span>            inputIndex = inputtingChars.Count;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> ClearDisplayBuffer()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>lock</span>(printting)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                cursorVisible = Console.CursorVisible;
+</span></span><span style=display:flex><span>                Console.CursorVisible = <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>                Console.SetCursorPosition(startLeft, startTop);
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>while</span> (Console.CursorTop &lt; endTop || Console.CursorLeft &lt; endLeft)
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    Console.Write(<span style=color:#b44>&#39; &#39;</span>);
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>                Console.SetCursorPosition(startLeft, startTop);
+</span></span><span style=display:flex><span>                Console.CursorVisible = cursorVisible;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> DisplayTo(<span style=color:#0b0;font-weight:700>int</span> cursorLeft, <span style=color:#0b0;font-weight:700>int</span> cursorTop)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>lock</span>(printting)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                cursorVisible = Console.CursorVisible;
+</span></span><span style=display:flex><span>                Console.CursorVisible = <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>                Console.SetCursorPosition(cursorLeft, cursorTop);
+</span></span><span style=display:flex><span>                startLeft = cursorLeft; startTop = cursorTop;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                Console.Write(promptText);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (inputIndex == inputtingChars.Count)
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>for</span> (<span style=color:#0b0;font-weight:700>int</span> i = <span style=color:#666>0</span>; i &lt; inputtingChars.Count; i++)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        Console.Write(inputtingChars[i]);
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    currentLeft = Console.CursorLeft;
+</span></span><span style=display:flex><span>                    currentTop = Console.CursorTop;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>else</span>
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>for</span> (<span style=color:#0b0;font-weight:700>int</span> i = <span style=color:#666>0</span>; i &lt; inputtingChars.Count; i++)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        <span style=color:#a2f;font-weight:700>if</span> (inputIndex == i)
+</span></span><span style=display:flex><span>                        {
+</span></span><span style=display:flex><span>                            currentLeft = Console.CursorLeft;
+</span></span><span style=display:flex><span>                            currentTop = Console.CursorTop;
+</span></span><span style=display:flex><span>                        }
+</span></span><span style=display:flex><span>                        Console.Write(inputtingChars[i]);
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                endLeft = Console.CursorLeft;
+</span></span><span style=display:flex><span>                endTop = Console.CursorTop;
+</span></span><span style=display:flex><span>                Console.CursorVisible = cursorVisible;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>void</span> SetInputStart(<span style=color:#0b0;font-weight:700>int</span> cursorLeft, <span style=color:#0b0;font-weight:700>int</span> cursorTop)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>lock</span>(printting)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                cursorVisible = Console.CursorVisible;
+</span></span><span style=display:flex><span>                Console.CursorVisible = <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>                Console.SetCursorPosition(startLeft, startTop);
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>while</span> (Console.CursorTop &lt; endTop || Console.CursorLeft &lt; endLeft)
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    Console.Write(<span style=color:#b44>&#39; &#39;</span>);
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>                Console.SetCursorPosition(cursorLeft, cursorTop);
+</span></span><span style=display:flex><span>                startLeft = cursorLeft; startTop = cursorTop;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                Console.Write(promptText);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (inputIndex == inputtingChars.Count)
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>for</span> (<span style=color:#0b0;font-weight:700>int</span> i = <span style=color:#666>0</span>; i &lt; inputtingChars.Count; i++)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        Console.Write(inputtingChars[i]);
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    currentLeft = Console.CursorLeft;
+</span></span><span style=display:flex><span>                    currentTop = Console.CursorTop;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>else</span>
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>for</span> (<span style=color:#0b0;font-weight:700>int</span> i = <span style=color:#666>0</span>; i &lt; inputtingChars.Count; i++)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        <span style=color:#a2f;font-weight:700>if</span> (inputIndex == i)
+</span></span><span style=display:flex><span>                        {
+</span></span><span style=display:flex><span>                            currentLeft = Console.CursorLeft;
+</span></span><span style=display:flex><span>                            currentTop = Console.CursorTop;
+</span></span><span style=display:flex><span>                        }
+</span></span><span style=display:flex><span>                        Console.Write(inputtingChars[i]);
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                endLeft = Console.CursorLeft;
+</span></span><span style=display:flex><span>                endTop = Console.CursorTop;
+</span></span><span style=display:flex><span>                Console.CursorVisible = cursorVisible;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>string</span> ReadLine()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            InitReadLine();
+</span></span><span style=display:flex><span>            PrintInputString();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>while</span> (<span style=color:#a2f;font-weight:700>true</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                readedKey = Console.ReadKey(<span style=color:#a2f;font-weight:700>true</span>);
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (PreviewCharInput != <span style=color:#a2f;font-weight:700>null</span> &amp;&amp; PreviewCharInput.Invoke(<span style=color:#a2f;font-weight:700>this</span>, readedKey))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>continue</span>;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (DealInputChar())
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    inputting = <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>return</span> InputtingString;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                PrintInputString();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (CharInput != <span style=color:#a2f;font-weight:700>null</span> &amp;&amp; CharInput.Invoke(<span style=color:#a2f;font-weight:700>this</span>, readedKey))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    inputting = <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>return</span> InputtingString;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>string</span> QuietReadLine()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            InitReadLine();
+</span></span><span style=display:flex><span>            PrintInputString();
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>while</span> (<span style=color:#a2f;font-weight:700>true</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                readedKey = Console.ReadKey(<span style=color:#a2f;font-weight:700>true</span>);
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (PreviewCharInput != <span style=color:#a2f;font-weight:700>null</span> &amp;&amp; PreviewCharInput.Invoke(<span style=color:#a2f;font-weight:700>this</span>, readedKey))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>continue</span>;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (DealInputChar())
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    inputting = <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>return</span> InputtingString;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (CharInput != <span style=color:#a2f;font-weight:700>null</span> &amp;&amp; CharInput.Invoke(<span style=color:#a2f;font-weight:700>this</span>, readedKey))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    inputting = <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>return</span> InputtingString;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=使用实例>使用实例：</h2><ul><li>这是一个可以过滤输入的使用实例, 它仅允许用户输入数字, 并且支持使用WSAD按键控制已输入内容在控制台中的移动</li></ul><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System</span>;
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>Null.Library</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>namespace</span> <span style=color:#00f;font-weight:700>LibraryTest</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>class</span> <span style=color:#00f>Program</span>
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>static</span> <span style=color:#a2f;font-weight:700>void</span> Main(<span style=color:#0b0;font-weight:700>string</span>[] args)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            DynamicScanner scanner = <span style=color:#a2f;font-weight:700>new</span> DynamicScanner();
+</span></span><span style=display:flex><span>            scanner.PreviewCharInput += Scanner_PreviewCharInput;
+</span></span><span style=display:flex><span>            scanner.CharInput += Scanner_CharInput;
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>while</span>(<span style=color:#a2f;font-weight:700>true</span>)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#0b0;font-weight:700>string</span> temp = scanner.ReadLine();
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#a2f;font-weight:700>static</span> <span style=color:#0b0;font-weight:700>bool</span> Scanner_CharInput(DynamicScanner sender, ConsoleKeyInfo c)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            Console.Title = <span style=color:#b44>$&#34;Length: {sender.InputtingString.Length}, Inputed: {sender.InputtingString}&#34;</span>;
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>false</span>;
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#a2f;font-weight:700>static</span> <span style=color:#0b0;font-weight:700>bool</span> Scanner_PreviewCharInput(DynamicScanner sender, ConsoleKeyInfo c)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (c.KeyChar &gt;= <span style=color:#b44>&#39;0&#39;</span> &amp;&amp; c.KeyChar &lt;= <span style=color:#b44>&#39;9&#39;</span> || DynamicScanner.IsControlKey(c.Key))
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>false</span>;       <span style=color:#080;font-style:italic>// 表示不取消, 即:录入这个字符</span>
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>else</span>
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>switch</span> (c.Key)       <span style=color:#080;font-style:italic>// 通过WSAD按键可以控制输入内容移动</span>
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.W:
+</span></span><span style=display:flex><span>                        sender.SetInputStart(sender.StartLeft, sender.StartTop - <span style=color:#666>1</span>);
+</span></span><span style=display:flex><span>                        <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.S:
+</span></span><span style=display:flex><span>                        sender.SetInputStart(sender.StartLeft, sender.StartTop + <span style=color:#666>1</span>);
+</span></span><span style=display:flex><span>                        <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.A:
+</span></span><span style=display:flex><span>                        sender.SetInputStart(sender.StartLeft - <span style=color:#666>1</span>, sender.StartTop);
+</span></span><span style=display:flex><span>                        <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>case</span> ConsoleKey.D:
+</span></span><span style=display:flex><span>                        sender.SetInputStart(sender.StartLeft + <span style=color:#666>1</span>, sender.StartTop);
+</span></span><span style=display:flex><span>                        <span style=color:#a2f;font-weight:700>break</span>;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>true</span>;
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></div><footer class=post-footer><div class=post-tags><a href=/tags/.net rel=tag title=.NET>#.NET#</a>
+<a href=/tags/c rel=tag title=C#>#C##</a>
+<a href=/tags/%e8%bd%ae%e5%ad%90 rel=tag title=轮子>#轮子#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class=article-copyright><div class=article-copyright-info><p><span>声明：</span>[C#] 控制台动态输入</p><p><span>链接：</span>https://slimenull.top/post/csharp-dynamicinput2/</p><p><span>作者：</span>史莱姆诺尔</p><p><span>声明： </span>本博客文章除特别声明外，均采用 <a href=https://creativecommons.org/licenses/by-nc-sa/3.0/ target=_blank style=text-decoration:underline>CC BY-NC-SA 3.0</a>许可协议，转载请注明出处！</p></div></div><div class=clear></div></div><div class=reward-qr-info><div>创作实属不易，如有帮助，那就打赏博主些许茶钱吧 ^_^</div><button id=rewardButton disable=enable onclick='var qr=document.getElementById("QR");qr.style.display==="none"?qr.style.display="block":qr.style.display="none"'>
+<span>赏</span></button><div id=QR style=display:none><div id=wechat style=display:inline-block><img id=wechat_qr src=/img/wechat-pay.png alt="WeChat Pay"><p>微信打赏</p></div><div id=alipay style=display:inline-block><img id=alipay_qr src=/img/ali-pay.png alt=Alipay><p>支付宝打赏</p></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://slimenull.top/post/csharp-simplechat/ rel=next title="[C#] TOC Tiny - 基于 TCP 套接字的简易网络聊天室"><i class="fa fa-chevron-left"></i> [C#] TOC Tiny - 基于 TCP 套接字的简易网络聊天室</a></div><div class="post-nav-prev post-nav-item"><a href=https://slimenull.top/post/linux-bgrun/ rel=prev title="Linux BgRun">Linux BgRun
+<i class="fa fa-chevron-right"></i></a></div></div><div id=wcomments></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+<span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><section class="site-overview sidebar-panel sidebar-panel-active"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/avatar.jpg alt=史莱姆诺尔><p class=site-author-name itemprop=name>史莱姆诺尔</p><p class="site-description motion-element" itemprop=description>我很可爱, 请给我糖 o(*////▽////*)q</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>70</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>0</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>39</span>
+<span class=site-state-item-name>标签</span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/slimenull/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
+GitHub</a></span>
+<span class=links-of-author-item><a href=https://space.bilibili.com/441842015 target=_blank title=Bilibili><i class="fa fa-fw fa-tv"></i>
+Bilibili</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-inline"><div class=links-of-blogroll-title><i class="fa fa-fw fa-globe"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://vertillusion.xyz/ title=Vertillusion target=_blank>Vertillusion</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
+标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/.net>.Net</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/c>C#</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E7%AC%94%E8%AE%B0>笔记</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E8%BD%AE%E5%AD%90>轮子</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E5%8F%82%E8%80%83>参考</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E7%AE%97%E6%B3%95>算法</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E7%BB%8F%E9%AA%8C>经验</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/wpf>Wpf</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/linux>Linux</a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95>踩坑记录</a></li></ul></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span>
+<span class=copyright-author>诺尔的小窝</span></div><div class=powered-info><span class=powered-by>Powered by - <a class=powered-link href=//gohugo.io target=_blank title=hugo>Hugo v0.95.0</a></span>
+<span class=separator-line>/</span>
+<span class=theme-info>Theme by - <a class=powered-link href=//github.com/elkan1788/hugo-theme-next target=_blank>NexT</a></span></div><div class=vistor-info><script async src=//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js></script>
+<span class=site-uv><i class="fa fa-user"></i>
+<span class=busuanzi-value id=busuanzi_value_site_uv></span></span>
+<span class=separator-line>/</span>
+<span class=site-pv><i class="fa fa-eye"></i>
+<span class=busuanzi-value id=busuanzi_value_site_pv></span></span></div><div class=license-info><span class=storage-info>Storage by
+<a href=https://www.ucloud.cn/ style=font-weight:700 target=_blank>UCloud云存储</a></span>
+<span class=separator-line>/</span>
+<span class=license-num><a href=http://beian.miit.gov.cn target=_blank>粤ICP备18047355号</a></span></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i>
+<span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript src=//cdn.bootcdn.net/ajax/libs/jquery/2.1.4/jquery.min.js></script>
+<script type=text/javascript src=/js/search.js></script>
+<script type=text/javascript src=/js/affix.js></script>
+<script type=text/javascript src=/js/scrollspy.js></script>
+<script type=text/javascript>function detectIE(){var e=window.navigator.userAgent,t=e.indexOf("MSIE "),n=e.indexOf("Trident/"),s=e.indexOf("Edge/");return t>0||n>0||s>0?-1:1}function getCntViewHeight(){var t=$("#content").height(),e=$(window).height(),n=t>e?t-e:$(document).height()-e;return n}function getScrollbarWidth(){var e=$("<div />").addClass("scrollbar-measure").prependTo("body"),t=e[0],n=t.offsetWidth-t.clientWidth;return e.remove(),n}function registerBackTop(){var t=50,e=$(".back-to-top");$(window).on("scroll",function(){e.toggleClass("back-to-top-on",window.pageYOffset>t);var s=$(window).scrollTop(),o=getCntViewHeight(),i=s/o,n=Math.round(i*100),a=n>100?100:n;$("#scrollpercent>span").html(a)}),e.on("click",function(){$("html,body").animate({scrollTop:0,screenLeft:0},800)})}function initScrollSpy(){var e=".post-toc",s=$(e),t=".active-current";s.on("activate.bs.scrollspy",function(){var t=$(e+" .active").last();n(),t.addClass("active-current")}).on("clear.bs.scrollspy",n),$("body").scrollspy({target:e});function n(){$(e+" "+t).removeClass(t.substring(1))}}function initAffix(){var e=$(".header-inner").height(),t=parseInt($(".main").css("padding-bottom"),10),n=e+10;$(".sidebar-inner").affix({offset:{top:n,bottom:t}}),$(document).on("affixed.bs.affix",function(){updateTOCHeight(document.body.clientHeight-100)})}function initTOCDimension(){$(window).on("resize",function(){e&&clearTimeout(e),e=setTimeout(function(){var e=document.body.clientHeight-100;updateTOCHeight(e)},0)}),updateTOCHeight(document.body.clientHeight-100);var e,t=getScrollbarWidth();$(".post-toc").css("width","calc(100% + "+t+"px)")}function updateTOCHeight(e){e=e||"auto",$(".post-toc").css("max-height",e)}$(function(){var t=$(".header-inner").height()+10,n,s,e,o;$("#sidebar").css({'margin-top':t}).show(),n=parseInt($("#sidebar").css("margin-top")),s=parseInt($(".sidebar-inner").css("height")),e=n+s,o=$(".content-wrap").height(),o<e&&$(".content-wrap").css("min-height",e),$(".site-nav-toggle").on("click",function(){var e=$(".site-nav"),o=$(".toggle"),t="site-nav-on",i="toggle-close",n=e.hasClass(t),a=n?"slideUp":"slideDown",s=n?"removeClass":"addClass";e.stop()[a]("normal",function(){e[s](t),o[s](i)})}),registerBackTop(),initScrollSpy(),initAffix(),initTOCDimension(),$(".sidebar-nav-toc").click(function(){$(this).addClass("sidebar-nav-active"),$(this).next().removeClass("sidebar-nav-active"),$("."+$(this).next().attr("data-target")).toggle(500),$("."+$(this).attr("data-target")).toggle(500)}),$(".sidebar-nav-overview").click(function(){$(this).addClass("sidebar-nav-active"),$(this).prev().removeClass("sidebar-nav-active"),$("."+$(this).prev().attr("data-target")).toggle(500),$("."+$(this).attr("data-target")).toggle(500)})})</script><script src=//cdn.bootcdn.net/ajax/libs/imageviewer/0.1.0/viewer.min.js></script>
+<script type=text/javascript>$(function(){$(".post-body").viewer()})</script><script type=text/javascript>$(function(){detectIE()>0?$.getScript(document.location.protocol+"//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js",function(){new Waline({el:"#wcomments",visitor:!0,avatar:"wavatar",avatarCDN:"https://sdn.geekzu.org/avatar/",avatarForce:!1,wordLimit:"200",placeholder:" 欢迎留下您的宝贵建议，请填写您的昵称和邮箱便于后续交流. ^_^ ",requiredFields:["nick","mail"],serverURL:"https://hugo-blog-api-slimenull.vercel.app/",lang:"zh-cn"})}):$("#wcomments").html("抱歉，Waline插件不支持IE，建议使用Chrome浏览器。")})</script><script type=text/javascript src="//s7.addthis.com/js/300/addthis_widget.js#pubid=623eced69d98b93c"></script>
+<script>(function(){var e=document.createElement("script"),t,n=window.location.protocol.split(":")[0];n==="https"?e.src="https://zz.bdstatic.com/linksubmit/push.js":e.src="http://push.zhanzhang.baidu.com/push.js",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script></body></html>
