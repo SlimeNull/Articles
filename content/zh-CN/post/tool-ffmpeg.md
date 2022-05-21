@@ -1,7 +1,10 @@
 ---
 title: 'FFmpeg 使用概述'
 date: 2020-02-14
-draft: true
+tags:
+  - 参考
+  - 笔记
+  - 杂
 ---
 
 通过简单的格式转换以及视频压缩示例讲解 FFmpeg 基本使用
