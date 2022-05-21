@@ -1,0 +1,251 @@
+<!doctype html><html lang=zh-cn dir=content/zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=content-security-policy content="upgrade-insecure-requests"><title>C# WinForm Graphics 闪屏与双缓冲 - 诺尔的小窝</title><meta name=keywords content="史莱姆诺尔,萌诺尔,诺尔,博客,程序员,自学,编程,笔记,技术,分享,.NET,C#"><meta name=author content="史莱姆诺尔"><meta property="og:title" content="C# WinForm Graphics 闪屏与双缓冲"><meta property="og:site_name" content="诺尔的小窝"><meta property="og:image" content="https://slimenull.topimg/author.jpg"><meta name=title content="C# WinForm Graphics 闪屏与双缓冲 - 诺尔的小窝"><meta name=description content="为了更好的开源世界~"><link rel="shortcut icon" href=https://slimenull.topimg/favicon.ico><link rel=apple-touch-icon href=https://slimenull.topimg/apple-touch-icon.png><link rel=apple-touch-icon-precomposed href=https://slimenull.topimg/apple-touch-icon.png><link href=//unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css rel=stylesheet type=text/css><link href=//unpkg.com/imageviewer@1.1.0/dist/viewer.min.css rel=stylesheet><link href=https://slimenull.topcss/main.css rel=stylesheet type=text/css><link href=https://slimenull.topcss/syntax.css rel=stylesheet type=text/css></head><body itemscope itemtype=http://schema.org/WebPage lang=zh-hans><div class="container one-collumn sidebar-position-left page-home"><div class=headband></div><header id=header class=header itemscope itemtype=http://schema.org/WPHeader><div class=header-inner><div class=site-brand-container><div class=site-nav-toggle><div class=toggle role=button style=opacity:1;top:0><span class=toggle-line></span>
+<span class=toggle-line></span>
+<span class=toggle-line></span></div></div><div class=site-meta><div class=custom-logo-site-title><a href=/ class=brand rel=start><span class=logo-line-before><i></i></span>
+<span class=site-title>诺尔的小窝</span>
+<span class=logo-line-after><i></i></span></a></div><p class=site-subtitle>前进! 前进! 不择手段的前进!</p></div><div class=site-nav-right><div class="toggle popup-trigger" style=opacity:1;top:0><i class="fa fa-search fa-fw fa-lg"></i></div></div></div><nav class=site-nav><ul id=menu class=menu><li class=menu-item><a href=/ rel=section><i class="menu-item-icon fa fa-fw fa-home"></i><br>首页</a></li><li class="menu-item menu-item-active"><a href=/post rel=section><i class="menu-item-icon fa fa-fw fa-archive"></i><br>归档</a></li><li class=menu-item><a href=/about.html rel=section><i class="menu-item-icon fa fa-fw fa-user"></i><br>关于我</a></li><li class=menu-item><a href=/404.html rel=section><i class="menu-item-icon fa fa-fw fa-heartbeat"></i><br>公益404</a></li><li class="menu-item menu-item-search"><a href=javascript:; class=popup-trigger><i class="menu-item-icon fa fa-search fa-fw"></i><br>搜索</a></li></ul><div class=site-search><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class=search-icon><i class="fa fa-search"></i></span>
+<span class=popup-btn-close><i class="fa fa-times-circle"></i></span><div class=local-search-input-wrapper><input autocomplete=off placeholder=搜索关键字... spellcheck=false type=text id=local-search-input autocapitalize=none autocorrect=off></div></div><div id=local-search-result></div></div></div></nav></div></header><main id=main class=main><div class=main-inner><div class=content-wrap><div id=content class=content><section id=posts class=posts-expand><article class="post post-type-normal" itemscope itemtype=http://schema.org/Article><header class=post-header><h1 class=post-title itemprop="name headline"><a class=post-title-link href=https://slimenull.top/post/csharp-winformsplashanddoublebuffered/ itemprop=url>C# WinForm Graphics 闪屏与双缓冲</a></h1><div class=post-meta><span class=post-pushdate><i class="fa fa-calendar-o fa-fw"></i>
+<span class=post-meta-item-text>时间：</span>
+<time itemprop=dateCreated datetime=2016-03-22T13:04:35+08:00 content="2022-02-26">2022-02-26</time></span>
+<span class=post-wordcount><i class="fa fa-file-word-o fa-fw"></i>
+<span class=post-meta-item-text>字数：</span>
+<span class=leancloud-world-count>3483 字</span></span>
+<span class=post-readtime><i class="fa fa-eye fa-fw"></i>
+<span class=post-meta-item-text>阅读：</span>
+<span class=leancloud-view-count>7分钟</span></span>
+<span id=/post/csharp-winformsplashanddoublebuffered/ class="leancloud_visitors post-visitor" data-flag-title="C# WinForm Graphics 闪屏与双缓冲"><i class="fa fa-binoculars fa-fw"></i>
+<span class=post-meta-item-text>阅读次数：</span>
+<span class=leancloud-visitors-count></span></span></div></header><div class=post-body itemprop=articleBody><p>简单介绍 C# WinForm 实现双缓冲的方法以及一些代码示例</p><p>GDI+ 是 C# 常用的绘图库, .NET Framework 内置, 只需添加 System.Drawing 的引用即可, 而 .NET Core 也可以使用 System.Drawing.Common 的 nuget 包来安装此库.</p><h2 id=graphics>Graphics</h2><p>一般网上常用的 Graphics 使用方法, 都会告诉你, 去订阅 Paint 事件, 然后再 Paint 事件的事件参数中获取 Graphics 对象, 进行绘制.</p><h3 id=控件是如何绘制的>控件是如何绘制的?</h3><p>Paint 事件是 WinForm 中, 每一个控件进行绘制时引发的事件, 例如控件添加到窗体上时, 会进行绘制, 当控件内容改变时, 会重绘, 或者当你的窗口大小调整并且边框影响到这个控件的时候, 控件也会重绘, 而只要是绘制, 就会引发 Paint 事件.</p><p>Paint 事件一般发生在控件自身的内容绘制完毕后, 例如反编译 Button 的基类 ButtonBase 可发现, OnPaint 方法中, 最先是绘制按钮的逻辑, 最后是引发 Paint 事件的逻辑.</p><p>所以, 如果用户订阅了 Paint 事件, 并在 Paint 事件中加入自己的绘图逻辑, 那么自己所绘制的内容就能持久的显示在控件上(因为控件每一次绘制都会引发 Paint).</p><blockquote><p>OnPaint 方法是一个可重写的, 定义在 Control 类中的方法, 他的默认实现是引发 Paint 事件, 在其他控件中, 一般会重写这个方法, 然后加入绘制自身的逻辑, 最后调用 base.OnPaint 引发 Paint 事件</p></blockquote><h3 id=闪屏问题是如何引起的>闪屏问题是如何引起的?</h3><p>事实上, Windows 的窗口绘制还分为 PaintBackground 和 Paint, 它们分别对应 WM_ERASEBKGND 和 WM_PAINT 消息, 作用是绘制(擦除)背景和绘制内容.</p><blockquote><p>WM_ERASEBKGND 和 WM_PAINT 是 Windows 消息, 消息处理是 Windows 窗口的核心组成部分, Windows 窗口的一切活动都依赖于能引发各种行为的 Windows 消息, 包括鼠标移动, 点击, 窗口大小调整, 布局改变等等</p></blockquote><p>如果一个控件频繁的重绘, 那么这两个逻辑会不断的引发, 如果不擦除背景, 那么在第二次绘制的时候, 上一次的内容还存在于窗口, 那么就会出现显示上的一些错误. 而频繁的调用这两个方法, 就会造成内容擦除(绘制背景时所有内容被擦除), 内容绘制(绘制内容时, 新的内容显示出来).</p><p>所以, 内容的频繁擦除与绘制, 造成了视觉上的闪屏.</p><h3 id=allpaintinginwmpaint>AllPaintingInWmPaint</h3><p>WinForm 中, 部分控件是不引发 PaintBackground 的, 这些控件将所有的绘图逻辑都在 Paint 中处理, 但是尽管如此, 闪屏问题其实还是存在的, 因为只不过是把擦除内容的逻辑放在了不同的地方, 背景擦除还是存在的.</p><h3 id=脱离控件事件进行绘图>脱离控件事件进行绘图</h3><p>刚刚我们提到, 直接在 Paint 事件中加入绘图逻辑, 我们的绘图逻辑就会自动执行, 但是如果频繁的刷新, 就会有闪屏现象, 如何解决这个?</p><p>Windows 窗口本来就是分离了 PaintBackground 和 Paint 的, 所以, 这方面我们无法改变, 既然如此, 我们是否可以脱离控件的 Paint 事件, 而是交由我们自己去控制绘制逻辑呢? 没错, 可以.</p><p>每一个控件都有一个 CreateGraphics 方法, 调用这个方法, 我们就可以获取一个可以在该控件上进行绘图的 Graphics 对象, 同时你也可以使用 Graphics.FromHwnd(控件.Handle) 来获取一个控件的 Graphics, 两者是等价的.</p><p>既然有了 Graphics, 那么我们就可以进行绘制了, 可以尝试添加一个按钮, 然后在这个按钮的 Click 事件订阅者中添加在窗口中绘图的逻辑, 这样当点击按钮时, 你的绘图逻辑就被执行了.</p><h3 id=使用计时器循环更新控件>使用计时器循环更新控件</h3><p>现在, 我们可以主动向控件中绘制内容了, 不妨… 试试做一个图片序列播放器? 假设我一个很短的视频, 每一帧都转为了图片, 存在了一个目录中, 那么通过 Graphics, 我们也可以将他绘制出来.</p><p>通过计时器(Timer), 我们可以定时执行我们想执行的代码, 尝试做一个借助计时器的图片序列播放器吧</p><blockquote><p>Graphics.DrawImage 可以在绘图区域中绘制一个图片</p></blockquote><h3 id=避免绘制的内容被清除>避免绘制的内容被清除</h3><p>即使我们现在已经可以主动向控件中绘制, 但是 WinForm 自身的绘制逻辑仍会对我们绘制的内容产生影响, 例如内容被 PaintBackground 清空, 解决方案就是, 我们可以在 Paint 事件中也使用我们的绘图逻辑.</p><p>为了方便, 我建议将绘图逻辑封装为方法, 然后使用的时候调用它, 在 Paint 事件中也是调用这个绘图逻辑.</p><h3 id=主动绘制时引起的闪屏>主动绘制时引起的闪屏</h3><p>假若我们绘制的不是图片, 而是一些线条和图形, 那么会如何? 如果这些都是会改变位置的, 在下一次绘制时, 和上一次是不同的, 那么, 该怎么办?</p><p>前面所说的图片序列播放器说的是绘制图片, 在绘制下一张图片的时候, 我们只需要把新的图片绘制上去, 之前的内容就被覆盖掉了, 固然不会有什么问题, 但是如果我们绘制的是可变化的几何, 事情就不一样了.</p><p>因为绘制的内容会变动, 所以还用这种方法的话, 那么在第二次绘制的时候, 第一次绘制的内容还在窗口上, 就产生了重合… 我们应该在第二次绘制之前, 先清空我们绘制的内容, 对吧? 等等, 有些熟悉… 这不就是 WinForm 引起闪屏的原因???</p><p>不慌, 接着往下看.</p><h2 id=双缓冲>双缓冲</h2><p>既然清空内容然后绘制内容会引起闪屏, 那我们干脆不清空, 直接把新的内容覆盖上去, 岂不美哉? 但是… 新的内容从哪来? 答案就是双缓冲.</p><p>双缓冲意思就是在后台分配一个绘图区域, 绘制的时候在这个后台的绘图区域上绘制, 绘制完毕后再拷贝到前台界面上, 因为期间涉及到前台的界面和后台的绘图区, 所以被称为双缓冲.</p><blockquote><p>WinForm 虽然自带双缓冲, 但是对于我们的绘制不会起到任何作用, 即便我们通过更改窗口的 DoubleBuffered 属性</p></blockquote><h3 id=bitmap>Bitmap</h3><p>如果你搜索双缓冲的话, 我相信, 大部分答案都是使用 Bitmap, 虽然这个方法并不是最好的方法, 但是还是介绍一下罢.</p><p>Bitmap, 位图, 我们可以创建一个 Bitmap, 大小和我们的控件相同, 然后在绘制的时候, 在这个 Bitmap 上绘制, 绘制完毕之后, 把这个 Bitmap 通过 DrawImage 的形式将他绘制到控件上, 覆盖原有内容, 这样就避免了闪屏问题.</p><blockquote><p>Graphics.FromImage 可以通过一个图像来创建 Graphics 对象, 使用该对象将在对应图片上绘图.</p></blockquote><blockquote><p>使用 Bitmap 的话, 如果缓冲区的大小不改变, 也没有什么不妥, 但是如果你的绘制区域可能频繁的调整大小, 那么你的内存可能会哭唧唧</p></blockquote><h3 id=bufferedgraphics>BufferedGraphics</h3><p>BufferedGraphics 正如其名, 是缓冲了的 Graphics, 其官方介绍是这么介绍的: &lsquo;为双缓冲提供图形缓冲区&rsquo;.</p><blockquote><p>官方文档 <a href="https://docs.microsoft.com/zh-cn/dotnet/api/system.drawing.bufferedgraphics?view=dotnet-plat-ext-6.0" target=_blank rel=noopener>BufferedGraphics 类 (System.Drawing) | Microsoft Docs</a></p></blockquote><p>BufferedGraphics类没有公共构造函数, 并且必须 BufferedGraphicsContext 使用其方法为应用程序域创建 Allocate. 可以使用 BufferedGraphicsManager 从静态属性 Current 中检索当前应用程序域的 BufferedGraphicsContext.</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#080;font-style:italic>// 要进行操作的 Graphics, 例如控件 Graphics</span>
+</span></span><span style=display:flex><span>Graphics g;
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>// 要分配的 BufferedGraphics 大小</span>
+</span></span><span style=display:flex><span><span style=color:#0b0;font-weight:700>int</span> Width, Height;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>BufferedGraphicsContext context = BufferedGraphicsManager.Current;
+</span></span><span style=display:flex><span>BufferedGraphics bufferedG = context.Allocate(g, <span style=color:#a2f;font-weight:700>new</span> Rectangle(<span style=color:#666>0</span>, <span style=color:#666>0</span>, Width, Height));
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#080;font-style:italic>// 此时, 创建完毕的 bufferedG 可供使用</span>
+</span></span></code></pre></div><p>使用 BufferedGraphics 的 Graphics 获取用来绘图的缓冲区, 绘制完毕后使用其 Render 方法将内容输出到目标 Graphics. 此时, 缓冲区内的内容就会一次性输出到目标 Grahpics.</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#080;font-style:italic>// 已经分配好的 BufferedGraphics</span>
+</span></span><span style=display:flex><span>BufferedGraphics bufferedG;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>Graphics g = bufferedG.Graphics;
+</span></span><span style=display:flex><span>g.FillRectangle(Brushes.Purple, <span style=color:#a2f;font-weight:700>new</span> Rectangle(<span style=color:#666>50</span>, <span style=color:#666>50</span>, <span style=color:#666>200</span>, <span style=color:#666>200</span>));
+</span></span><span style=display:flex><span>bufferedG.Render();
+</span></span></code></pre></div><blockquote><p>另外, BufferedGraphics 的核心是 使用内存 DC, 并且使用 Bitblt 直接拷贝绘图区域, 比 DrawImage 快些, 这也是推荐使用 BufferedGraphics 的原因</p></blockquote><h2 id=拓展知识>拓展知识</h2><h3 id=重写-onpaintbackground>重写 OnPaintBackground</h3><p>OnPaintBackground 是 Control 的一个保护的, 可重写的方法, 其内部逻辑是对控件背景进行绘制, 除此之外, 他还支持一些简单的透明背景. 如果我们既使用双缓冲, 又在 OnPaintBackground 书写我们的绘图逻辑, 那么闪屏问题将永远不会出现.</p><p>因为闪屏问题就是因为绘制背景时内容被擦除, 可是绘制背景的就是我们的代码逻辑, 而我们所绘制的背景正是所需要绘制的内容, 于是内容也将不可能被清除掉.</p><blockquote><p>OnPaintBackground 只会进行背景绘制, 不会引发任何事件, 所以在重写的方法内, 我们可以放心的把 base.OnPaintBackground(pevent) 删除掉</p></blockquote><h3 id=保证缓冲区与控件尺寸一致>保证缓冲区与控件尺寸一致</h3><p>你可以在控件尺寸更改时, 重新分配缓冲区, 使用 SizeChanged 事件, 或者干脆重写 OnSizeChanged, 在 base.OnSizeChanged(e) 之前就把缓冲区重新分配好, 这样也方便管理些</p><h2 id=代码示例>代码示例</h2><p>简单使用 BufferedGraphics 封装一个自带 BufferedGraphics 属性的控件(继承 Control), DoubleBufferedControlBase</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System</span>;
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System.Drawing</span>;
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System.Windows.Forms</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>namespace</span> <span style=color:#00f;font-weight:700>NullLib.TickAnimation.WinForm</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>abstract</span> <span style=color:#a2f;font-weight:700>class</span> <span style=color:#00f>DoubleBufferedControlBase</span> : Control
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>readonly</span> BufferedGraphicsContext context;
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> BufferedGraphics bufferedGraphics;
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic>// 缓冲区保护且只读</span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>protected</span> BufferedGraphics BufferedGraphics { <span style=color:#a2f;font-weight:700>get</span> =&gt; bufferedGraphics; }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> DoubleBufferedControlBase() : <span style=color:#a2f;font-weight:700>base</span>()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#080;font-style:italic>// 创建控件时即分配缓冲区</span>
+</span></span><span style=display:flex><span>            context = BufferedGraphicsManager.Current;
+</span></span><span style=display:flex><span>            bufferedGraphics = context.Allocate(Graphics.FromHwnd(Handle), <span style=color:#a2f;font-weight:700>new</span> Rectangle(Point.Empty, Size));
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#080;font-style:italic>// 当改变尺寸, 重新分配缓冲区</span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>protected</span> <span style=color:#a2f;font-weight:700>override</span> <span style=color:#a2f;font-weight:700>void</span> OnSizeChanged(EventArgs e)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (bufferedGraphics != <span style=color:#a2f;font-weight:700>null</span>)
+</span></span><span style=display:flex><span>                bufferedGraphics.Dispose();
+</span></span><span style=display:flex><span>            bufferedGraphics = context.Allocate(Graphics.FromHwnd(Handle), <span style=color:#a2f;font-weight:700>new</span> Rectangle(Point.Empty, Size));
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>base</span>.OnSizeChanged(e);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>使用双缓冲绘制的三阶贝塞尔曲线编辑器控件 CubicBezierView</p><div class=highlight><pre tabindex=0 style=background-color:#f8f8f8;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System</span>;
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System.Drawing</span>;
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>using</span> <span style=color:#00f;font-weight:700>System.Windows.Forms</span>;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#a2f;font-weight:700>namespace</span> <span style=color:#00f;font-weight:700>NullLib.TickAnimation.WinForm</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#080;font-style:italic>// 贝塞尔曲线编辑器抽象基类</span>
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>abstract</span> <span style=color:#a2f;font-weight:700>class</span> <span style=color:#00f>BezierViewBase</span> : DoubleBufferedControlBase
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>bool</span> ControlHandleEnabled
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>get</span> =&gt; controlHandleEnabled;
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>set</span>
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (controlHandleEnabled == <span style=color:#a2f;font-weight:700>value</span>)
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>return</span>;
+</span></span><span style=display:flex><span>                controlHandleEnabled = <span style=color:#a2f;font-weight:700>value</span>;
+</span></span><span style=display:flex><span>                Invalidate();  <span style=color:#080;font-style:italic>// 当是否允许使用控制手柄值改变时, 立即重绘 (此操作同时也会在窗体设计器中显现出)</span>
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> <span style=color:#0b0;font-weight:700>int</span> ControlHandleSize { <span style=color:#a2f;font-weight:700>get</span>; <span style=color:#a2f;font-weight:700>set</span>; } = <span style=color:#666>20</span>;                                                   <span style=color:#080;font-style:italic>// 控制点手柄的大小</span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> Brush ControlHandleBrush { <span style=color:#a2f;font-weight:700>get</span>; <span style=color:#a2f;font-weight:700>set</span>; } = <span style=color:#a2f;font-weight:700>new</span> SolidBrush(Color.FromArgb(<span style=color:#666>196</span>, <span style=color:#666>125</span>, <span style=color:#666>208</span>));     <span style=color:#080;font-style:italic>// 控制点手柄所用笔刷</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> Pen ControlHandleStickPen { <span style=color:#a2f;font-weight:700>get</span>; <span style=color:#a2f;font-weight:700>set</span>; } = <span style=color:#a2f;font-weight:700>new</span> Pen(Color.FromArgb(<span style=color:#666>196</span>, <span style=color:#666>125</span>, <span style=color:#666>208</span>), <span style=color:#666>3</span>);        <span style=color:#080;font-style:italic>// 控制点手柄与其他点连线的笔</span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> Pen CurvePen { <span style=color:#a2f;font-weight:700>get</span>; <span style=color:#a2f;font-weight:700>set</span>; } = <span style=color:#a2f;font-weight:700>new</span> Pen(Color.Black, <span style=color:#666>5</span>);                                       <span style=color:#080;font-style:italic>// 画曲线所用笔</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>private</span> <span style=color:#0b0;font-weight:700>bool</span> controlHandleEnabled;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>protected</span> <span style=color:#a2f;font-weight:700>override</span> <span style=color:#a2f;font-weight:700>void</span> OnSizeChanged(EventArgs e)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>base</span>.OnSizeChanged(e);
+</span></span><span style=display:flex><span>            Invalidate();           <span style=color:#080;font-style:italic>// 当尺寸改变时, 应立即重绘以适应改动 (因为图形是适配控件大小的)</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>protected</span> PointF GetControlPointFromPixelPoint(Point p)                 <span style=color:#080;font-style:italic>// 将控制点坐标转换为屏幕坐标</span>
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>new</span> PointF(p.X / (<span style=color:#0b0;font-weight:700>float</span>)Width, <span style=color:#666>1</span> - p.Y / (<span style=color:#0b0;font-weight:700>float</span>)Height);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>protected</span> Point GetPixelPointFromControlPoint(PointF p)                 <span style=color:#080;font-style:italic>// 将屏幕坐标转换为控制点坐标</span>
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>new</span> Point((<span style=color:#0b0;font-weight:700>int</span>)(p.X * Width), Height - (<span style=color:#0b0;font-weight:700>int</span>)(p.Y * Height));
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>protected</span> Rectangle GetRectangleFromCenterPoint(Point p, <span style=color:#0b0;font-weight:700>int</span> r)   <span style=color:#080;font-style:italic>// 通过一个中心点, 半径, 计算一个圆的外界矩形 (用来绕某点填充圆形)</span>
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>return</span> <span style=color:#a2f;font-weight:700>new</span> Rectangle(p.X - r, p.Y - r, r * <span style=color:#666>2</span> + <span style=color:#666>1</span>, r * <span style=color:#666>2</span> + <span style=color:#666>1</span>);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#a2f;font-weight:700>public</span> <span style=color:#a2f;font-weight:700>class</span> <span style=color:#00f>CubicBezierView</span> : BezierViewBase
+</span></span><span style=display:flex><span>    {
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> PointF ControlPoint1 { <span style=color:#a2f;font-weight:700>get</span>; <span style=color:#a2f;font-weight:700>set</span>; } = <span style=color:#a2f;font-weight:700>new</span> PointF(<span style=color:#666>0.25f</span>, <span style=color:#666>0.75f</span>);
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>public</span> PointF ControlPoint2 { <span style=color:#a2f;font-weight:700>get</span>; <span style=color:#a2f;font-weight:700>set</span>; } = <span style=color:#a2f;font-weight:700>new</span> PointF(<span style=color:#666>0.75f</span>, <span style=color:#666>0.25f</span>);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>void</span> PaintCore()
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            Graphics g = BufferedGraphics.Graphics;
+</span></span><span style=display:flex><span>            g.Clear(BackColor);
+</span></span><span style=display:flex><span>            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+</span></span><span style=display:flex><span>            Point startPoint = <span style=color:#a2f;font-weight:700>new</span> Point(<span style=color:#666>0</span>, Height - <span style=color:#666>1</span>);
+</span></span><span style=display:flex><span>            Point endPoint = <span style=color:#a2f;font-weight:700>new</span> Point(Width - <span style=color:#666>1</span>, <span style=color:#666>0</span>);
+</span></span><span style=display:flex><span>            Point cp1 = GetPixelPointFromControlPoint(ControlPoint1);  <span style=color:#080;font-style:italic>// 获取控制点1的屏幕坐标</span>
+</span></span><span style=display:flex><span>            Point cp2 = GetPixelPointFromControlPoint(ControlPoint2);  <span style=color:#080;font-style:italic>// 获取控制点2的屏幕坐标</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (ControlHandleEnabled)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                g.DrawLine(ControlHandleStickPen, startPoint, cp1);
+</span></span><span style=display:flex><span>                g.DrawLine(ControlHandleStickPen, endPoint, cp2);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                g.DrawBezier(CurvePen, startPoint, cp1, cp2, endPoint);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>                Rectangle
+</span></span><span style=display:flex><span>                    handleRect1 = GetRectangleFromCenterPoint(cp1, ControlHandleSize / <span style=color:#666>2</span>),
+</span></span><span style=display:flex><span>                    handleRect2 = GetRectangleFromCenterPoint(cp2, ControlHandleSize / <span style=color:#666>2</span>);
+</span></span><span style=display:flex><span>                g.FillEllipse(ControlHandleBrush, handleRect1);
+</span></span><span style=display:flex><span>                g.FillEllipse(ControlHandleBrush, handleRect2);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>else</span>
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                g.DrawBezier(CurvePen, startPoint, cp1, cp2, endPoint);
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            BufferedGraphics.Render();
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>protected</span> <span style=color:#a2f;font-weight:700>override</span> <span style=color:#a2f;font-weight:700>void</span> OnPaintBackground(PaintEventArgs e)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            PaintCore();    <span style=color:#080;font-style:italic>// 将背景绘制的逻辑改为自己的绘图逻辑</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#0b0;font-weight:700>bool</span> cp1Captured, cp2Captured;
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>protected</span> <span style=color:#a2f;font-weight:700>override</span> <span style=color:#a2f;font-weight:700>void</span> OnMouseDown(MouseEventArgs e)   <span style=color:#080;font-style:italic>// 判断是否点击了手柄</span>
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (ControlHandleEnabled)
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                Point cp1 = GetPixelPointFromControlPoint(ControlPoint1);
+</span></span><span style=display:flex><span>                Point cp2 = GetPixelPointFromControlPoint(ControlPoint2);
+</span></span><span style=display:flex><span>                Rectangle
+</span></span><span style=display:flex><span>                    handleRect1 = GetRectangleFromCenterPoint(cp1, ControlHandleSize / <span style=color:#666>2</span>),
+</span></span><span style=display:flex><span>                    handleRect2 = GetRectangleFromCenterPoint(cp2, ControlHandleSize / <span style=color:#666>2</span>);
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (handleRect1.Contains(e.Location))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    cp1Captured = <span style=color:#a2f;font-weight:700>true</span>;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> (handleRect2.Contains(e.Location))
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    cp2Captured = <span style=color:#a2f;font-weight:700>true</span>;
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>base</span>.OnMouseDown(e);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>protected</span> <span style=color:#a2f;font-weight:700>override</span> <span style=color:#a2f;font-weight:700>void</span> OnMouseMove(MouseEventArgs e)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>if</span> (ControlHandleEnabled)            <span style=color:#080;font-style:italic>// 如果开启了控制手柄</span>
+</span></span><span style=display:flex><span>            {
+</span></span><span style=display:flex><span>                <span style=color:#a2f;font-weight:700>if</span> (ClientRectangle.Contains(e.Location))   <span style=color:#080;font-style:italic>// 如果鼠标还在控件范围内</span>
+</span></span><span style=display:flex><span>                {
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>if</span> (cp1Captured)     <span style=color:#080;font-style:italic>// 如果在编辑第一个手柄</span>
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        ControlPoint1 = GetControlPointFromPixelPoint(e.Location);   <span style=color:#080;font-style:italic>// 设置控制点位置</span>
+</span></span><span style=display:flex><span>                        Invalidate();
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                    <span style=color:#a2f;font-weight:700>else</span> <span style=color:#a2f;font-weight:700>if</span> (cp2Captured)
+</span></span><span style=display:flex><span>                    {
+</span></span><span style=display:flex><span>                        ControlPoint2 = GetControlPointFromPixelPoint(e.Location);
+</span></span><span style=display:flex><span>                        Invalidate();
+</span></span><span style=display:flex><span>                    }
+</span></span><span style=display:flex><span>                }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>base</span>.OnMouseMove(e);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>        <span style=color:#a2f;font-weight:700>protected</span> <span style=color:#a2f;font-weight:700>override</span> <span style=color:#a2f;font-weight:700>void</span> OnMouseUp(MouseEventArgs e)
+</span></span><span style=display:flex><span>        {
+</span></span><span style=display:flex><span>            cp1Captured = cp2Captured = <span style=color:#a2f;font-weight:700>false</span>;  <span style=color:#080;font-style:italic>// 清除手柄调整状态</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>            <span style=color:#a2f;font-weight:700>base</span>.OnMouseUp(e);
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div></div><footer class=post-footer><div class=post-tags><a href=/tags/.net rel=tag title=.NET>#.NET#</a>
+<a href=/tags/c rel=tag title=C#>#C##</a>
+<a href=/tags/winform rel=tag title=WinForm>#WinForm#</a>
+<a href=/tags/%e7%ac%94%e8%ae%b0 rel=tag title=笔记>#笔记#</a></div><div class=addthis_inline_share_toolbox></div><div class=post-nav><div class=article-copyright><div class=article-copyright-info><p><span>标题：</span>C# WinForm Graphics 闪屏与双缓冲</p><p><span>链接：</span>https://slimenull.top/post/csharp-winformsplashanddoublebuffered/</p><p><span>作者：</span>史莱姆诺尔</p><p><span>声明： </span>本博客文章除特别声明外，均采用 <a href=https://creativecommons.org/licenses/by-nc-sa/3.0/ target=_blank style=text-decoration:underline>CC BY-NC-SA 3.0</a>许可协议，转载请注明出处！</p></div></div><div class=clear></div></div><div class=reward-qr-info><div>创作实属不易，如有帮助，那就打赏博主些许茶钱吧 ^_^</div><button id=rewardButton disable=enable onclick='var qr=document.getElementById("QR");qr.style.display==="none"?qr.style.display="block":qr.style.display="none"'>
+<span>赏</span></button><div id=QR style=display:none><div id=wechat style=display:inline-block><img id=wechat_qr src=/img/wechat-pay.png alt="WeChat Pay"><p>微信打赏</p></div><div id=alipay style=display:inline-block><img id=alipay_qr src=/img/ali-pay.png alt=Alipay><p>支付宝打赏</p></div></div></div><div class=post-nav><div class="post-nav-next post-nav-item"><a href=https://slimenull.top/post/dotnet-aboutdlldependency/ rel=next title="[.NET] 关于 .NET 动态链接库的目标与依赖问题"><i class="fa fa-chevron-left"></i> [.NET] 关于 .NET 动态链接库的目标与依赖问题</a></div><div class="post-nav-prev post-nav-item"><a href=https://slimenull.top/post/cpp-keystateandwindow/ rel=prev title="C++ 获取键盘状态与操作窗口">C++ 获取键盘状态与操作窗口
+<i class="fa fa-chevron-right"></i></a></div></div><div id=wcomments></div></footer></article></section></div></div><div class=sidebar-toggle><div class=sidebar-toggle-line-wrap><span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+<span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+<span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id=sidebar class=sidebar><div class=sidebar-inner><section class="site-overview sidebar-panel sidebar-panel-active"><div class="site-author motion-element" itemprop=author itemscope itemtype=http://schema.org/Person><img class=site-author-image itemprop=image src=/img/avatar.jpg alt=史莱姆诺尔><p class=site-author-name itemprop=name>史莱姆诺尔</p><p class="site-description motion-element" itemprop=description>我很可爱, 请给我糖 o(*////▽////*)q</p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"><a href=/post/><span class=site-state-item-count>83</span>
+<span class=site-state-item-name>日志</span></a></div><div class="site-state-item site-state-categories"><a href=/categories/><span class=site-state-item-count>0</span>
+<span class=site-state-item-name>分类</span></a></div><div class="site-state-item site-state-tags"><a href=/tags/><span class=site-state-item-count>43</span>
+<span class=site-state-item-name>标签</span></a></div></nav><div class="links-of-author motion-element"><span class=links-of-author-item><a href=https://github.com/slimenull/ target=_blank title=GitHub><i class="fa fa-fw fa-github"></i>
+GitHub</a></span>
+<span class=links-of-author-item><a href=https://space.bilibili.com/441842015 target=_blank title=Bilibili><i class="fa fa-fw fa-tv"></i>
+Bilibili</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-inline"><div class=links-of-blogroll-title><i class="fa fa-fw fa-globe"></i>
+友情链接</div><ul class=links-of-blogroll-list><li class=links-of-blogroll-item><a href=https://vertillusion.xyz/ title=Vertillusion target=_blank>Vertillusion</a></li></ul></div><div class="tagcloud-of-blogroll motion-element tagcloud-of-blogroll-inline"><div class=tagcloud-of-blogroll-title><i class="fa fa-fw fa-tags"></i>
+标签云</div><ul class=tagcloud-of-blogroll-list><li class=tagcloud-of-blogroll-item><a href=/tags/.net>.Net
+<sup>54</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/c>C#
+<sup>45</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E7%AC%94%E8%AE%B0>笔记
+<sup>36</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E8%BD%AE%E5%AD%90>轮子
+<sup>16</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E5%8F%82%E8%80%83>参考
+<sup>12</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E7%AE%97%E6%B3%95>算法
+<sup>8</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E7%BB%8F%E9%AA%8C>经验
+<sup>8</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/wpf>Wpf
+<sup>7</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/linux>Linux
+<sup>6</sup></a></li><li class=tagcloud-of-blogroll-item><a href=/tags/%E6%95%99%E7%A8%8B>教程
+<sup>6</sup></a></li></ul></div></section></div></aside></div></main><footer id=footer class=footer><div class=footer-inner><div class=copyright><span class=copyright-year>&copy; 2010 - 2022</span>
+<span class=with-love><i class="fa fa-heart"></i></span>
+<span class=copyright-author>诺尔的小窝</span></div><div class=powered-info><span class=powered-by>Powered by - <a class=powered-link href=//gohugo.io target=_blank title=hugo>Hugo v0.95.0</a></span>
+<span class=separator-line>/</span>
+<span class=theme-info>Theme by - <a class=powered-link href=//github.com/elkan1788/hugo-theme-next target=_blank>NexT</a></span></div><div class=vistor-info><script async src=//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js></script>
+<span class=site-uv><i class="fa fa-user"></i>
+<span class=busuanzi-value id=busuanzi_value_site_uv></span></span>
+<span class=separator-line>/</span>
+<span class=site-pv><i class="fa fa-eye"></i>
+<span class=busuanzi-value id=busuanzi_value_site_pv></span></span></div><div class=license-info><span class=storage-info>Storage by
+<a href=https://www.ucloud.cn/ style=font-weight:700 target=_blank>UCloud云存储</a></span>
+<span class=separator-line>/</span>
+<span class=license-num><a href=http://beian.miit.gov.cn target=_blank>粤ICP备18047355号</a></span></div></div></footer><div class=back-to-top><i class="fa fa-arrow-up"></i>
+<span id=scrollpercent><span>0</span>%</span></div></div><script type=text/javascript src=//unpkg.com/jquery@2.1.4/dist/jquery.min.js></script>
+<script type=text/javascript src=https://slimenull.topjs/search.js></script>
+<script type=text/javascript src=https://slimenull.topjs/affix.js></script>
+<script type=text/javascript src=https://slimenull.topjs/scrollspy.js></script>
+<script type=text/javascript>function detectIE(){var e=window.navigator.userAgent,t=e.indexOf("MSIE "),n=e.indexOf("Trident/"),s=e.indexOf("Edge/");return t>0||n>0||s>0?-1:1}function getCntViewHeight(){var t=$("#content").height(),e=$(window).height(),n=t>e?t-e:$(document).height()-e;return n}function getScrollbarWidth(){var e=$("<div />").addClass("scrollbar-measure").prependTo("body"),t=e[0],n=t.offsetWidth-t.clientWidth;return e.remove(),n}function registerBackTop(){var t=50,e=$(".back-to-top");$(window).on("scroll",function(){e.toggleClass("back-to-top-on",window.pageYOffset>t);var s=$(window).scrollTop(),o=getCntViewHeight(),i=s/o,n=Math.round(i*100),a=n>100?100:n;$("#scrollpercent>span").html(a)}),e.on("click",function(){$("html,body").animate({scrollTop:0,screenLeft:0},800)})}function initScrollSpy(){var e=".post-toc",s=$(e),t=".active-current";s.on("activate.bs.scrollspy",function(){var t=$(e+" .active").last();n(),t.addClass("active-current")}).on("clear.bs.scrollspy",n),$("body").scrollspy({target:e});function n(){$(e+" "+t).removeClass(t.substring(1))}}function initAffix(){var e=$(".header-inner").height(),t=parseInt($(".main").css("padding-bottom"),10),n=e+10;$(".sidebar-inner").affix({offset:{top:n,bottom:t}}),$(document).on("affixed.bs.affix",function(){updateTOCHeight(document.body.clientHeight-100)})}function initTOCDimension(){$(window).on("resize",function(){e&&clearTimeout(e),e=setTimeout(function(){var e=document.body.clientHeight-100;updateTOCHeight(e)},0)}),updateTOCHeight(document.body.clientHeight-100);var e,t=getScrollbarWidth();$(".post-toc").css("width","calc(100% + "+t+"px)")}function updateTOCHeight(e){e=e||"auto",$(".post-toc").css("max-height",e)}$(function(){var t=$(".header-inner").height()+10,n,s,e,o;$("#sidebar").css({'margin-top':t}).show(),n=parseInt($("#sidebar").css("margin-top")),s=parseInt($(".sidebar-inner").css("height")),e=n+s,o=$(".content-wrap").height(),o<e&&$(".content-wrap").css("min-height",e),$(".site-nav-toggle").on("click",function(){var e=$(".site-nav"),o=$(".toggle"),t="site-nav-on",i="toggle-close",n=e.hasClass(t),a=n?"slideUp":"slideDown",s=n?"removeClass":"addClass";e.stop()[a]("normal",function(){e[s](t),o[s](i)})}),registerBackTop(),initScrollSpy(),initAffix(),initTOCDimension(),$(".sidebar-nav-toc").click(function(){$(this).addClass("sidebar-nav-active"),$(this).next().removeClass("sidebar-nav-active"),$("."+$(this).next().attr("data-target")).toggle(500),$("."+$(this).attr("data-target")).toggle(500)}),$(".sidebar-nav-overview").click(function(){$(this).addClass("sidebar-nav-active"),$(this).prev().removeClass("sidebar-nav-active"),$("."+$(this).prev().attr("data-target")).toggle(500),$("."+$(this).attr("data-target")).toggle(500)})})</script><script src=//unpkg.com/imageviewer@1.1.0/dist/viewer.min.js></script>
+<script type=text/javascript>$(function(){$(".post-body").viewer()})</script><script type=text/javascript>const locale={placeholder:"欢迎留下您的宝贵建议，请填写您的昵称和邮箱便于后续交流. ^_^"};$(function(){detectIE()>0?$.getScript(document.location.protocol+"//unpkg.com/@waline/client@1.6.0/dist/Waline.min.js",function(){new Waline({el:"#wcomments",visitor:!0,emoji:[],wordLimit:"200",uploadImage:!1,locale,requiredMeta:["nick","mail"],serverURL:"https://hugo-blog-api-slimenull.vercel.app/",lang:"zh-cn"})}):$("#wcomments").html("抱歉，Waline插件不支持IE，建议使用Chrome浏览器。")})</script><script type=text/javascript src="//s7.addthis.com/js/300/addthis_widget.js#pubid=623eced69d98b93c"></script>
+<script>(function(){var e=document.createElement("script"),t,n=window.location.protocol.split(":")[0];n==="https"?e.src="https://zz.bdstatic.com/linksubmit/push.js":e.src="http://push.zhanzhang.baidu.com/push.js",t=document.getElementsByTagName("script")[0],t.parentNode.insertBefore(e,t)})()</script></body></html>
