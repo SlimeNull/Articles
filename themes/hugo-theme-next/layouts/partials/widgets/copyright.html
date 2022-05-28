@@ -1,0 +1,23 @@
+<div class="post-nav">
+<div class="article-copyright">
+    <div class="article-copyright-info">
+        <p> 
+            <span>{{ i18n "ArticleTitle" }}：</span>{{ .Page.Title }}
+        </p>
+        <p> 
+            <span>{{ i18n "ArticleLink" }}：</span>{{ .Page.Permalink }}
+        </p>
+        <p> 
+            <span>{{ i18n "ArticleAuthor" }}：</span>{{ .Site.Params.AuthorName }}
+        </p>
+        {{ $declContent := .Site.Params.ArticleDeclContent }}
+        {{ if not $declContent }}
+            {{ $declContent = i18n "ArticleDeclContent" }}
+        {{ end }}
+        <p> 
+            <span>{{ i18n "ArticleDeclaration" }}： </span>{{ $declContent | safeHTML }}
+        </p>
+    </div>
+</div>
+<div class="clear"></div>
+</div>
