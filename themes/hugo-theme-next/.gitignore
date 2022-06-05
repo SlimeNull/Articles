@@ -1,5 +1,0 @@
-public/
-exampleSite/config/dev/
-.hugo_build.lock
-*.exe
-.DS_Store
